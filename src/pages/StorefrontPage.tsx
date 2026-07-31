@@ -13,6 +13,7 @@ import { Footer } from '../components/Footer'
 import { FloatingWhatsApp } from '../components/FloatingWhatsApp'
 import { ProductModal } from '../components/ProductModal'
 import { useContent } from '../context/ContentContext'
+import { brand } from '../data/brand'
 import type { FilterOption, Product } from '../types/product'
 
 function filterProducts(
@@ -27,7 +28,7 @@ function filterProducts(
 }
 
 export function StorefrontPage() {
-  const { products } = useContent()
+  const { products, configured, loading } = useContent()
   const [filter, setFilter] = useState<FilterOption>('all')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
@@ -40,6 +41,22 @@ export function StorefrontPage() {
     () => filterProducts(products, filter),
     [products, filter],
   )
+
+  if (configured && loading) {
+    return (
+      <div
+        className="flex min-h-svh items-center justify-center bg-ink"
+        aria-busy="true"
+        aria-label="Loading"
+      >
+        <img
+          src="/logo.png"
+          alt={brand.name}
+          className="animate-fade-in h-20 w-auto object-contain md:h-24"
+        />
+      </div>
+    )
+  }
 
   return (
     <>

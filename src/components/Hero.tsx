@@ -7,7 +7,7 @@ const SLIDE_INTERVAL_MS = 6000
 
 export function Hero() {
   const { hero, activeWhatsApp } = useContent()
-  const slides = hero.images.length ? hero.images : ['']
+  const slides = hero.images.filter((image) => image.trim())
   const [activeIndex, setActiveIndex] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -36,7 +36,7 @@ export function Hero() {
 
   return (
     <section id="home" className="relative min-h-[100svh] overflow-hidden">
-      <div className="absolute inset-0" aria-hidden="true">
+      <div className="absolute inset-0 bg-ink" aria-hidden="true">
         {slides.map((src, index) => (
           <img
             key={`${src}-${index}`}

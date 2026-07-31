@@ -45,6 +45,25 @@ export const fallbackContent: SiteContent = {
   },
 }
 
+/** Empty shell used while Supabase content loads — avoids flashing mockup images. */
+export const bootContent: SiteContent = {
+  products: [],
+  hero: {
+    eyebrow: brand.name,
+    headline: brand.tagline,
+    description: brand.description,
+    primaryCta: 'View Collection',
+    secondaryCta: 'Order on WhatsApp',
+    images: [],
+  },
+  aboutImage: '',
+  lookbookImages: [],
+  whatsapp: {
+    contacts: defaultWhatsApp.contacts.map((contact) => ({ ...contact })),
+    activeIndex: defaultWhatsApp.activeIndex,
+  },
+}
+
 function emptyWhatsAppContact(index: number): WhatsAppContact {
   return {
     label: `Line ${index + 1}`,

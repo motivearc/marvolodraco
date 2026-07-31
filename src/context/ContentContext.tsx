@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { isSupabaseConfigured } from '../lib/supabase'
 import {
+  bootContent,
   deleteProduct as deleteProductRemote,
   fallbackContent,
   fetchSiteContent,
@@ -54,7 +55,9 @@ type ContentContextValue = {
 const ContentContext = createContext<ContentContextValue | null>(null)
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<SiteContent>(fallbackContent)
+  const [content, setContent] = useState<SiteContent>(() =>
+    structuredClone(isSupabaseConfigured ? bootContent : fallbackContent),
+  )
   const [loading, setLoading] = useState(isSupabaseConfigured)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -77,7 +80,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           ? err.message
           : 'Failed to load content from Supabase.',
       )
-      setContent(structuredClone(fallbackContent))
+      // Keep boot/previous content — do not flash Unsplash mockups on failure.
     } finally {
       setLoading(false)
     }
