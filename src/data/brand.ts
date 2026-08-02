@@ -18,9 +18,9 @@ export const brand = {
     { label: 'Line 2', number: '', display: '' },
     { label: 'Line 3', number: '', display: '' },
   ],
-  instagramUrl: 'https://instagram.com/marvolo',
+  instagramUrl: 'https://www.instagram.com/marvolodraco.mvd?igsh=dWtydWxoZzNkM2Rz',
   instagramHandle: '@marvolo',
-  email: 'hello@marvolo.com',
+  email: 'marvolodraco.mvd@gmail.com',
   heroImage:
     'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=80',
   aboutImage:
