@@ -59,7 +59,7 @@ export function ImageField({ label, value, onChange, hint }: ImageFieldProps) {
               onChange(event.target.value)
             }}
             placeholder="https://… or select / upload an image"
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm text-ink outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base text-ink outline-none focus:border-ink"
           />
           <div className="flex flex-wrap gap-2">
             <button

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { useContent } from '../context/ContentContext'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import type { Product } from '../types/product'
 import { sizeGuide } from '../data/content'
 import { buildWhatsAppOrderUrl, formatPrice } from '../utils/whatsapp'
@@ -12,6 +13,7 @@ type ProductModalProps = {
 
 export function ProductModal({ product, onClose }: ProductModalProps) {
   const { activeWhatsApp } = useContent()
+  const online = useOnlineStatus()
   const [activeImage, setActiveImage] = useState(0)
   const [selectedColour, setSelectedColour] = useState('')
   const [selectedSize, setSelectedSize] = useState('')
@@ -62,7 +64,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="product-modal-title"
-        className="relative flex max-h-[94svh] w-full max-w-5xl flex-col overflow-hidden bg-cream sm:rounded-sm"
+        className="max-h-modal relative flex w-full max-w-5xl flex-col overflow-hidden bg-cream sm:rounded-sm"
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -225,8 +227,8 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
               </div>
             </div>
 
-            <div className="mt-8">
-              {canOrder && orderUrl ? (
+            <div className="mt-8 pb-[env(safe-area-inset-bottom)]">
+              {canOrder && orderUrl && online ? (
                 <a
                   href={orderUrl}
                   target="_blank"
@@ -241,13 +243,17 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                   disabled
                   className="inline-flex w-full cursor-not-allowed items-center justify-center bg-stone px-5 py-3.5 text-xs font-semibold tracking-[0.16em] text-cream uppercase opacity-70"
                 >
-                  {!product.available
-                    ? 'Sold Out'
-                    : 'Select colour & size to order'}
+                  {!online
+                    ? 'Reconnect to order'
+                    : !product.available
+                      ? 'Sold Out'
+                      : 'Select colour & size to order'}
                 </button>
               )}
               <p className="mt-3 text-center text-xs text-stone">
-                Orders and payment are completed through WhatsApp.
+                {online
+                  ? 'Orders and payment are completed through WhatsApp.'
+                  : 'You appear to be offline. Please reconnect to continue. Orders are not submitted while offline.'}
               </p>
             </div>
           </div>

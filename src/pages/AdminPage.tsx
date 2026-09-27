@@ -53,7 +53,7 @@ export function AdminPage() {
 
   if (!configured) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-mist px-5">
+      <div className="flex min-h-dynamic items-center justify-center bg-mist px-5 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div className="w-full max-w-lg space-y-4 border border-line bg-cream p-8">
           <p className="text-xs tracking-[0.2em] text-stone uppercase">
             {brand.name}
@@ -84,7 +84,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
 
   if (authLoading) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-mist text-sm text-stone">
+      <div className="flex min-h-dynamic items-center justify-center bg-mist px-5 text-sm text-stone">
         Checking session…
       </div>
     )
@@ -92,7 +92,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
 
   if (!user) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-mist px-5">
+      <div className="flex min-h-dynamic items-center justify-center bg-mist px-5 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <form
           onSubmit={handleLogin}
           className="w-full max-w-sm space-y-5 border border-line bg-cream p-8"
@@ -118,7 +118,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               autoFocus
-              className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
             />
           </label>
           <label className="block space-y-2">
@@ -130,7 +130,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
             />
           </label>
           {loginError ? <p className="text-sm text-red-700">{loginError}</p> : null}
@@ -153,8 +153,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
   }
 
   return (
-    <div className="min-h-svh bg-mist">
-      <header className="border-b border-line bg-cream">
+    <div className="min-h-dynamic bg-mist pb-[env(safe-area-inset-bottom)]">
+      <header className="border-b border-line bg-cream pt-[env(safe-area-inset-top)]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4 md:px-8">
           <div>
             <p className="text-xs tracking-[0.2em] text-stone uppercase">

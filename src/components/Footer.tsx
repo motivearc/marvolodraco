@@ -1,5 +1,7 @@
+import { pwaConfig } from '../config/pwa'
 import { brand } from '../data/brand'
 import { useContent } from '../context/ContentContext'
+import { usePWAInstall } from '../hooks/usePWAInstall'
 import { buildWhatsAppGeneralUrl } from '../utils/whatsapp'
 
 const footerLinks = [
@@ -13,7 +15,9 @@ const footerLinks = [
 
 export function Footer() {
   const { whatsapp, activeWhatsApp } = useContent()
+  const { showInstallAction, requestInstall } = usePWAInstall()
   const filledContacts = whatsapp.contacts.filter((contact) => contact.number)
+  const showFooterInstall = pwaConfig.showInstallInFooter && showInstallAction
 
   return (
     <footer
@@ -50,6 +54,17 @@ export function Footer() {
                 </a>
               </li>
             ))}
+            {showFooterInstall ? (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => void requestInstall()}
+                  className="text-left text-sm text-cream/80 transition hover:text-cream"
+                >
+                  Install App
+                </button>
+              </li>
+            ) : null}
           </ul>
         </div>
 

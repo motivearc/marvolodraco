@@ -35,7 +35,7 @@ export function Hero() {
   }
 
   return (
-    <section id="home" className="relative min-h-[100svh] overflow-hidden">
+    <section id="home" className="relative min-h-dynamic overflow-hidden">
       <div className="absolute inset-0 bg-ink" aria-hidden="true">
         {slides.map((src, index) => (
           <img
@@ -53,7 +53,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-ink/45 to-ink/20" />
       <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-ink/25" />
 
-      <div className="relative mx-auto flex min-h-[100svh] max-w-7xl items-end px-5 pb-16 pt-28 md:items-center md:px-8 md:pb-24 lg:px-10">
+      <div className="relative mx-auto flex min-h-dynamic max-w-7xl items-end px-5 pt-[calc(7rem+env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))] md:items-center md:px-8 md:pb-24 lg:px-10">
         <div className="max-w-xl text-cream">
           <p className="animate-fade-up mb-4 text-xs font-medium tracking-[0.28em] text-sand uppercase">
             {hero.eyebrow}

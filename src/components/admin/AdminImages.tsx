@@ -177,7 +177,7 @@ export function AdminImages() {
                         updateWhatsAppContact(index, 'label', event.target.value)
                       }
                       placeholder={`Line ${index + 1}`}
-                      className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+                      className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
                     />
                   </label>
                   <label className="block space-y-2">
@@ -195,7 +195,7 @@ export function AdminImages() {
                       }
                       placeholder="60123456789"
                       inputMode="tel"
-                      className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+                      className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
                     />
                   </label>
                   <label className="block space-y-2">
@@ -212,7 +212,7 @@ export function AdminImages() {
                         )
                       }
                       placeholder="+60 12-345 6789"
-                      className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+                      className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
                     />
                   </label>
                 </div>
@@ -237,7 +237,7 @@ export function AdminImages() {
             value={heroDraft.eyebrow}
             onChange={(event) => updateHeroField('eyebrow', event.target.value)}
             placeholder="Marvolo"
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
 
@@ -251,7 +251,7 @@ export function AdminImages() {
               updateHeroField('headline', event.target.value)
             }
             placeholder="Timeless Style. Made for Every Occasion."
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
 
@@ -265,7 +265,7 @@ export function AdminImages() {
             onChange={(event) =>
               updateHeroField('description', event.target.value)
             }
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
 
@@ -280,7 +280,7 @@ export function AdminImages() {
                 updateHeroField('primaryCta', event.target.value)
               }
               placeholder="View Collection"
-              className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
             />
           </label>
           <label className="block space-y-2">
@@ -293,7 +293,7 @@ export function AdminImages() {
                 updateHeroField('secondaryCta', event.target.value)
               }
               placeholder="Order on WhatsApp"
-              className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+              className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
             />
           </label>
         </div>
@@ -438,7 +438,7 @@ export function AdminImages() {
                         ),
                       )
                     }}
-                    className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+                    className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
                   />
                 </label>
                 <label className="block space-y-2">
@@ -455,7 +455,7 @@ export function AdminImages() {
                         ),
                       )
                     }}
-                    className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+                    className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
                   >
                     {LOOKBOOK_SPANS.map((span) => (
                       <option key={span} value={span}>

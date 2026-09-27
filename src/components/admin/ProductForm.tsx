@@ -106,7 +106,7 @@ export function ProductForm({
             required
             value={draft.name}
             onChange={(event) => update('name', event.target.value)}
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
 
@@ -119,7 +119,7 @@ export function ProductForm({
             onChange={(event) =>
               update('category', event.target.value as ProductCategory)
             }
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           >
             {PRODUCT_CATEGORIES.map((category) => (
               <option key={category} value={category}>
@@ -140,7 +140,7 @@ export function ProductForm({
             step={1}
             value={draft.price}
             onChange={(event) => update('price', Number(event.target.value))}
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
 
@@ -152,7 +152,7 @@ export function ProductForm({
             value={sizesText}
             onChange={(event) => setSizesText(event.target.value)}
             placeholder="S, M, L, XL"
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
       </div>
@@ -165,7 +165,7 @@ export function ProductForm({
           rows={3}
           value={draft.description}
           onChange={(event) => update('description', event.target.value)}
-          className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+          className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
         />
       </label>
 
@@ -177,7 +177,7 @@ export function ProductForm({
           <input
             value={draft.material}
             onChange={(event) => update('material', event.target.value)}
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
         <label className="block space-y-2">
@@ -187,7 +187,7 @@ export function ProductForm({
           <input
             value={draft.careInstructions}
             onChange={(event) => update('careInstructions', event.target.value)}
-            className="w-full border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
       </div>
@@ -247,7 +247,7 @@ export function ProductForm({
                 onChange={(event) =>
                   updateColour(index, { name: event.target.value })
                 }
-                className="min-w-0 flex-1 border border-line bg-cream px-3 py-2.5 text-sm outline-none focus:border-ink"
+                className="min-w-0 flex-1 border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
               />
               <button
                 type="button"

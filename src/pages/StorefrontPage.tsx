@@ -14,6 +14,7 @@ import { FloatingWhatsApp } from '../components/FloatingWhatsApp'
 import { ProductModal } from '../components/ProductModal'
 import { useContent } from '../context/ContentContext'
 import { brand } from '../data/brand'
+import { useCustomerPwaNav } from '../hooks/useIsStandalone'
 import type { FilterOption, Product } from '../types/product'
 
 function filterProducts(
@@ -29,6 +30,7 @@ function filterProducts(
 
 export function StorefrontPage() {
   const { products, configured, loading } = useContent()
+  const customerPwaNav = useCustomerPwaNav()
   const [filter, setFilter] = useState<FilterOption>('all')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
@@ -45,7 +47,7 @@ export function StorefrontPage() {
   if (configured && loading) {
     return (
       <div
-        className="flex min-h-svh items-center justify-center bg-ink"
+        className="flex min-h-dynamic items-center justify-center bg-ink"
         aria-busy="true"
         aria-label="Loading"
       >
@@ -59,7 +61,13 @@ export function StorefrontPage() {
   }
 
   return (
-    <>
+    <div
+      className={
+        customerPwaNav
+          ? 'pb-[calc(7rem+env(safe-area-inset-bottom))]'
+          : undefined
+      }
+    >
       <Navbar />
       <main>
         <Hero />
@@ -86,6 +94,6 @@ export function StorefrontPage() {
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
       />
-    </>
+    </div>
   )
 }
