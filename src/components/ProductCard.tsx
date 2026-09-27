@@ -9,10 +9,15 @@ type ProductCardProps = {
 export function ProductCard({ product, onViewDetails }: ProductCardProps) {
   return (
     <article className="group flex h-full flex-col">
-      <div className="relative mb-4 aspect-[3/4] overflow-hidden bg-cream-dark">
+      <button
+        type="button"
+        onClick={() => onViewDetails(product)}
+        aria-label={`View ${product.name}`}
+        className="relative mb-4 aspect-[3/4] w-full cursor-pointer overflow-hidden bg-cream-dark text-left"
+      >
         <img
           src={product.mainImage}
-          alt={product.name}
+          alt=""
           loading="lazy"
           decoding="async"
           className={`h-full w-full object-cover transition duration-700 group-hover:scale-[1.03] ${
@@ -28,7 +33,7 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
             New
           </span>
         ) : null}
-      </div>
+      </button>
 
       <div className="flex flex-1 flex-col">
         <div className="mb-3 flex items-start justify-between gap-3">
