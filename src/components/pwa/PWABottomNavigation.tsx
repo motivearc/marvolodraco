@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Feather, Home, LayoutGrid, Mail, Sparkles, type LucideIcon } from 'lucide-react'
+import { Feather, Home, LayoutGrid, Mail, type LucideIcon } from 'lucide-react'
 import { pwaBottomNavItems, type PwaNavIcon } from '../../config/pwa'
 import { useCustomerPwaNav } from '../../hooks/useIsStandalone'
 
 const icons: Record<PwaNavIcon, LucideIcon> = {
   home: Home,
-  sparkles: Sparkles,
   'layout-grid': LayoutGrid,
   feather: Feather,
   mail: Mail,
