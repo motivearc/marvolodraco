@@ -30,7 +30,6 @@ export const pwaConfig = {
 
 export type PwaNavIcon =
   | 'home'
-  | 'sparkles'
   | 'layout-grid'
   | 'feather'
   | 'mail'
@@ -46,12 +45,6 @@ export const pwaBottomNavItems: {
   icon: PwaNavIcon
 }[] = [
   { label: 'Home', shortLabel: 'Home', href: '#home', icon: 'home' },
-  {
-    label: 'New Arrivals',
-    shortLabel: 'New',
-    href: '#new-arrivals',
-    icon: 'sparkles',
-  },
   {
     label: 'Collection',
     shortLabel: 'Collection',

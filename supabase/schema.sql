@@ -7,7 +7,7 @@ create extension if not exists "pgcrypto";
 create table if not exists public.products (
   id text primary key,
   name text not null,
-  category text not null check (category in ('shirts', 't-shirts', 'pants', 'outerwear')),
+  category text not null,
   description text not null default '',
   price numeric(10, 2) not null default 0,
   main_image text not null default '',
@@ -36,11 +36,17 @@ create table if not exists public.site_settings (
   hero_primary_cta text not null default 'View Collection',
   hero_secondary_cta text not null default 'Order on WhatsApp',
   whatsapp_contacts jsonb not null default '[
-    {"label":"Line 1","number":"60123456789","display":"+60 12-345 6789"},
-    {"label":"Line 2","number":"","display":""},
-    {"label":"Line 3","number":"","display":""}
+    {"label":"Line 1","number":"60123456789","display":"+60 12-345 6789","active":true},
+    {"label":"Line 2","number":"","display":"","active":false},
+    {"label":"Line 3","number":"","display":"","active":false}
   ]'::jsonb,
   whatsapp_active_index integer not null default 0,
+  product_categories jsonb not null default '[
+    {"id":"shirts","label":"Shirts"},
+    {"id":"t-shirts","label":"T-Shirts"},
+    {"id":"pants","label":"Pants"},
+    {"id":"outerwear","label":"Outerwear"}
+  ]'::jsonb,
   updated_at timestamptz not null default now()
 );
 

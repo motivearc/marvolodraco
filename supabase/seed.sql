@@ -29,9 +29,9 @@ values (
   'View Collection',
   'Order on WhatsApp',
   '[
-    {"label":"Line 1","number":"60123456789","display":"+60 12-345 6789"},
-    {"label":"Line 2","number":"","display":""},
-    {"label":"Line 3","number":"","display":""}
+    {"label":"Line 1","number":"60123456789","display":"+60 12-345 6789","active":true},
+    {"label":"Line 2","number":"","display":"","active":false},
+    {"label":"Line 3","number":"","display":"","active":false}
   ]'::jsonb,
   0
 )

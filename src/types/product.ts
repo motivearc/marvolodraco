@@ -1,8 +1,4 @@
-export type ProductCategory =
-  | 'shirts'
-  | 't-shirts'
-  | 'pants'
-  | 'outerwear'
+export type ProductCategory = string
 
 export type ProductColour = {
   name: string

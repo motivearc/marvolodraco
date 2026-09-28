@@ -1,20 +1,25 @@
+import type { CatalogueCategory } from '../types/content'
 import type { FilterOption } from '../types/product'
 
-const filters: { label: string; value: FilterOption }[] = [
-  { label: 'All', value: 'all' },
-  { label: 'New Arrivals', value: 'new-arrivals' },
-  { label: 'Shirts', value: 'shirts' },
-  { label: 'T-Shirts', value: 't-shirts' },
-  { label: 'Pants', value: 'pants' },
-  { label: 'Outerwear', value: 'outerwear' },
-]
-
 type ProductFilterProps = {
+  categories: CatalogueCategory[]
   active: FilterOption
   onChange: (filter: FilterOption) => void
 }
 
-export function ProductFilter({ active, onChange }: ProductFilterProps) {
+export function ProductFilter({
+  categories,
+  active,
+  onChange,
+}: ProductFilterProps) {
+  const filters: { label: string; value: FilterOption }[] = [
+    { label: 'All', value: 'all' },
+    { label: 'New Arrivals', value: 'new-arrivals' },
+    ...categories.map((category) => ({
+      label: category.label,
+      value: category.id,
+    })),
+  ]
   return (
     <div className="-mx-5 mb-10 overflow-x-auto px-5 md:mx-0 md:mb-12 md:overflow-visible md:px-0">
       <div

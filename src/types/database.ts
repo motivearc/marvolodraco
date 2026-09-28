@@ -14,7 +14,7 @@ export type ProductColourRow = {
 export type ProductRow = {
   id: string
   name: string
-  category: 'shirts' | 't-shirts' | 'pants' | 'outerwear'
+  category: string
   description: string
   price: number
   main_image: string
@@ -35,6 +35,7 @@ export type WhatsAppContactRow = {
   label: string
   number: string
   display: string
+  active?: boolean
 }
 
 export type SiteSettingsRow = {
@@ -49,6 +50,7 @@ export type SiteSettingsRow = {
   hero_secondary_cta: string
   whatsapp_contacts?: WhatsAppContactRow[]
   whatsapp_active_index?: number
+  product_categories?: { id: string; label: string }[]
   updated_at?: string
 }
 

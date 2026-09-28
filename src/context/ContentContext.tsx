@@ -12,13 +12,16 @@ import {
   deleteProduct as deleteProductRemote,
   fallbackContent,
   fetchSiteContent,
-  getActiveWhatsAppContact,
+  getRotatingWhatsAppContact,
   replaceLookbookImages,
   resetSiteContent,
+  updateProductCategories as updateProductCategoriesRemote,
   updateSiteSettings as updateSiteSettingsRemote,
+  reorderProducts as reorderProductsRemote,
   upsertProduct as upsertProductRemote,
 } from '../services/contentService'
 import type {
+  CatalogueCategory,
   HeroContent,
   LookbookImage,
   SiteContent,
@@ -26,6 +29,7 @@ import type {
   WhatsAppSettings,
 } from '../types/content'
 import type { Product } from '../types/product'
+import { slugifyCategory } from '../utils/categories'
 
 type ContentContextValue = {
   configured: boolean
@@ -34,6 +38,7 @@ type ContentContextValue = {
   error: string | null
   content: SiteContent
   products: Product[]
+  categories: CatalogueCategory[]
   hero: HeroContent
   aboutImage: string
   lookbookImages: LookbookImage[]
@@ -42,6 +47,9 @@ type ContentContextValue = {
   refresh: () => Promise<void>
   upsertProduct: (product: Product) => Promise<void>
   deleteProduct: (id: string) => Promise<void>
+  reorderProducts: (orderedIds: string[]) => Promise<void>
+  addCategory: (label: string) => Promise<CatalogueCategory>
+  removeCategory: (id: string) => Promise<void>
   updateSiteContent: (input: {
     hero?: HeroContent
     aboutImage?: string
@@ -134,6 +142,67 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  const reorderProducts = async (orderedIds: string[]) => {
+    const snapshot = content.products
+    const rank = new Map(orderedIds.map((id, index) => [id, index]))
+    const products = [...snapshot].sort((a, b) => {
+      const left = rank.get(a.id) ?? Number.MAX_SAFE_INTEGER
+      const right = rank.get(b.id) ?? Number.MAX_SAFE_INTEGER
+      return left - right
+    })
+
+    setContent((prev) => ({ ...prev, products }))
+
+    try {
+      await runMutation(async () => {
+        await reorderProductsRemote(products.map((product) => product.id))
+      })
+    } catch (err) {
+      setContent((prev) => ({ ...prev, products: snapshot }))
+      throw err
+    }
+  }
+
+  const addCategory = async (label: string) => {
+    const trimmed = label.trim()
+    if (!trimmed) throw new Error('Enter a category name.')
+
+    const id = slugifyCategory(trimmed)
+    const existing = content.categories.find(
+      (category) =>
+        category.id === id ||
+        category.label.toLowerCase() === trimmed.toLowerCase(),
+    )
+    if (existing) return existing
+
+    const created = { id, label: trimmed }
+    const categories = [...content.categories, created]
+    await runMutation(async () => {
+      await updateProductCategoriesRemote(categories)
+      setContent((prev) => ({ ...prev, categories }))
+    })
+    return created
+  }
+
+  const removeCategory = async (id: string) => {
+    await runMutation(async () => {
+      if (content.products.some((product) => product.category === id)) {
+        throw new Error(
+          'Move products out of this category before removing it.',
+        )
+      }
+      if (content.categories.length <= 1) {
+        throw new Error('Keep at least one category.')
+      }
+
+      const categories = content.categories.filter(
+        (category) => category.id !== id,
+      )
+      await updateProductCategoriesRemote(categories)
+      setContent((prev) => ({ ...prev, categories }))
+    })
+  }
+
   const updateSiteContent = async (input: {
     hero?: HeroContent
     aboutImage?: string
@@ -198,14 +267,18 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         error,
         content,
         products: content.products,
+        categories: content.categories,
         hero: content.hero,
         aboutImage: content.aboutImage,
         lookbookImages: content.lookbookImages,
         whatsapp: content.whatsapp,
-        activeWhatsApp: getActiveWhatsAppContact(content.whatsapp),
+        activeWhatsApp: getRotatingWhatsAppContact(content.whatsapp),
         refresh,
         upsertProduct,
         deleteProduct,
+        reorderProducts,
+        addCategory,
+        removeCategory,
         updateSiteContent,
         resetContent,
         clearError: () => setError(null),

@@ -1,11 +1,14 @@
 import { useState, type FormEvent } from 'react'
 import { Plus, Trash2, X } from 'lucide-react'
-import type { Product, ProductCategory, ProductColour } from '../../types/product'
-import { PRODUCT_CATEGORIES } from '../../types/content'
+import type { CatalogueCategory } from '../../types/content'
+import type { Product, ProductColour } from '../../types/product'
+import { categoryLabel } from '../../utils/categories'
 import { ImageField } from './ImageField'
 
 type ProductFormProps = {
   product: Product
+  categories: CatalogueCategory[]
+  onAddCategory: (label: string) => Promise<CatalogueCategory>
   onSave: (product: Product) => Promise<void> | void
   onCancel: () => void
   saving?: boolean
@@ -20,6 +23,8 @@ function parseList(value: string): string[] {
 
 export function ProductForm({
   product,
+  categories,
+  onAddCategory,
   onSave,
   onCancel,
   saving = false,
@@ -27,6 +32,9 @@ export function ProductForm({
   const [draft, setDraft] = useState<Product>(structuredClone(product))
   const [sizesText, setSizesText] = useState(product.sizes.join(', '))
   const [submitting, setSubmitting] = useState(false)
+  const [showNewCategory, setShowNewCategory] = useState(false)
+  const [newCategoryName, setNewCategoryName] = useState('')
+  const [categoryError, setCategoryError] = useState<string | null>(null)
 
   function update<K extends keyof Product>(key: K, value: Product[K]) {
     setDraft((prev) => ({ ...prev, [key]: value }))
@@ -110,24 +118,76 @@ export function ProductForm({
           />
         </label>
 
-        <label className="block space-y-2">
+        <div className="block space-y-2">
           <span className="text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">
             Category
           </span>
-          <select
-            value={draft.category}
-            onChange={(event) =>
-              update('category', event.target.value as ProductCategory)
-            }
-            className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
-          >
-            {PRODUCT_CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
+          <div className="flex gap-2">
+            <select
+              value={draft.category}
+              onChange={(event) => update('category', event.target.value)}
+              className="min-w-0 flex-1 border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.label}
+                </option>
+              ))}
+              {categories.some((category) => category.id === draft.category) ? null : (
+                <option value={draft.category}>
+                  {categoryLabel(categories, draft.category)}
+                </option>
+              )}
+            </select>
+            <button
+              type="button"
+              onClick={() => {
+                setShowNewCategory((open) => !open)
+                setCategoryError(null)
+              }}
+              className="inline-flex shrink-0 items-center gap-1.5 border border-ink px-3 text-xs font-medium tracking-[0.12em] text-ink uppercase transition hover:bg-cream-dark"
+            >
+              <Plus className="size-3.5" />
+              Add
+            </button>
+          </div>
+          {showNewCategory ? (
+            <div className="flex gap-2">
+              <input
+                value={newCategoryName}
+                onChange={(event) => setNewCategoryName(event.target.value)}
+                placeholder="New category"
+                className="min-w-0 flex-1 border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
+              />
+              <button
+                type="button"
+                disabled={saving || submitting || !newCategoryName.trim()}
+                onClick={() => {
+                  setCategoryError(null)
+                  void onAddCategory(newCategoryName)
+                    .then((category) => {
+                      update('category', category.id)
+                      setNewCategoryName('')
+                      setShowNewCategory(false)
+                    })
+                    .catch((err: unknown) => {
+                      setCategoryError(
+                        err instanceof Error
+                          ? err.message
+                          : 'Could not add that category.',
+                      )
+                    })
+                }}
+                className="shrink-0 bg-ink px-3 text-xs font-semibold tracking-[0.12em] text-cream uppercase transition hover:bg-ink-soft disabled:opacity-60"
+              >
+                Save
+              </button>
+            </div>
+          ) : null}
+          {categoryError ? (
+            <p className="text-sm text-red-700">{categoryError}</p>
+          ) : null}
+        </div>
 
         <label className="block space-y-2">
           <span className="text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">

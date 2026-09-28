@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { Hero } from '../components/Hero'
 import { FeaturedCollection } from '../components/FeaturedCollection'
@@ -29,7 +29,7 @@ function filterProducts(
 }
 
 export function StorefrontPage() {
-  const { products, configured, loading } = useContent()
+  const { products, categories, configured, loading } = useContent()
   const customerPwaNav = useCustomerPwaNav()
   const [filter, setFilter] = useState<FilterOption>('all')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -43,6 +43,13 @@ export function StorefrontPage() {
     () => filterProducts(products, filter),
     [products, filter],
   )
+
+  useEffect(() => {
+    if (filter === 'all' || filter === 'new-arrivals') return
+    if (!categories.some((category) => category.id === filter)) {
+      setFilter('all')
+    }
+  }, [categories, filter])
 
   if (configured && loading) {
     return (
@@ -77,6 +84,7 @@ export function StorefrontPage() {
         />
         <Collection
           products={filteredProducts}
+          categories={categories}
           filter={filter}
           onFilterChange={setFilter}
           onViewDetails={setSelectedProduct}

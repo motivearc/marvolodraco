@@ -16,7 +16,9 @@ const footerLinks = [
 export function Footer() {
   const { whatsapp, activeWhatsApp } = useContent()
   const { showInstallAction, requestInstall } = usePWAInstall()
-  const filledContacts = whatsapp.contacts.filter((contact) => contact.number)
+  const filledContacts = whatsapp.contacts.filter(
+    (contact) => contact.active && contact.number,
+  )
   const showFooterInstall = pwaConfig.showInstallInFooter && showInstallAction
 
   return (

@@ -20,15 +20,23 @@ export type WhatsAppContact = {
   label: string
   number: string
   display: string
+  active: boolean
 }
 
 export type WhatsAppSettings = {
   contacts: WhatsAppContact[]
+  /** First active contact. Kept so older rows still have a single index. */
   activeIndex: number
+}
+
+export type CatalogueCategory = {
+  id: string
+  label: string
 }
 
 export type SiteContent = {
   products: Product[]
+  categories: CatalogueCategory[]
   hero: HeroContent
   aboutImage: string
   lookbookImages: LookbookImage[]
@@ -36,12 +44,5 @@ export type SiteContent = {
 }
 
 export const WHATSAPP_SLOT_COUNT = 3
-
-export const PRODUCT_CATEGORIES = [
-  'shirts',
-  't-shirts',
-  'pants',
-  'outerwear',
-] as const
 
 export const LOOKBOOK_SPANS = ['normal', 'tall', 'wide'] as const

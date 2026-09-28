@@ -19,6 +19,7 @@ function emptySlots(contacts: WhatsAppContact[]): WhatsAppContact[] {
         label: `Line ${index + 1}`,
         number: '',
         display: '',
+        active: false,
       }
     )
   })
@@ -75,17 +76,23 @@ export function AdminImages() {
   async function handleSave() {
     setMessage(null)
     try {
-      const contacts = emptySlots(whatsappDraft.contacts).map((contact) => ({
-        label: contact.label.trim() || 'Line',
-        number: normalizeWhatsAppNumber(contact.number),
-        display: contact.display.trim(),
-      }))
-      const filledIndexes = contacts
-        .map((contact, index) => (contact.number ? index : -1))
-        .filter((index) => index >= 0)
-      const activeIndex = contacts[whatsappDraft.activeIndex]?.number
-        ? whatsappDraft.activeIndex
-        : (filledIndexes[0] ?? 0)
+      const contacts = emptySlots(whatsappDraft.contacts).map((contact) => {
+        const number = normalizeWhatsAppNumber(contact.number)
+        return {
+          label: contact.label.trim() || 'Line',
+          number,
+          display: contact.display.trim(),
+          active: contact.active && Boolean(number),
+        }
+      })
+      if (!contacts.some((contact) => contact.active)) {
+        const firstFilled = contacts.findIndex((contact) => contact.number)
+        if (firstFilled >= 0) contacts[firstFilled].active = true
+      }
+      const activeIndex = Math.max(
+        0,
+        contacts.findIndex((contact) => contact.active),
+      )
 
       await updateSiteContent({
         hero: {
@@ -136,14 +143,14 @@ export function AdminImages() {
           WhatsApp numbers
         </h3>
         <p className="text-sm text-ink-soft/80">
-          Store up to 3 numbers. Choose which one is active for order buttons,
-          nav, and the floating chat. Numbers should include country code (e.g.
+          Store up to 3 numbers. Tick every line that should take orders.
+          Order buttons, the nav link, and the floating chat rotate through the
+          active numbers, one number per visit. Include the country code (e.g.
           60123456789).
         </p>
 
         <div className="space-y-4">
           {whatsappDraft.contacts.map((contact, index) => {
-            const isActive = whatsappDraft.activeIndex === index
             return (
               <div key={index} className="space-y-3 border border-line p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -152,18 +159,20 @@ export function AdminImages() {
                   </p>
                   <label className="inline-flex items-center gap-2 text-xs tracking-[0.08em] text-ink-soft uppercase">
                     <input
-                      type="radio"
-                      name="active-whatsapp"
-                      checked={isActive}
-                      onChange={() =>
+                      type="checkbox"
+                      checked={contact.active}
+                      onChange={(event) => {
+                        const active = event.target.checked
                         setWhatsappDraft((prev) => ({
                           ...prev,
-                          activeIndex: index,
+                          contacts: prev.contacts.map((item, i) =>
+                            i === index ? { ...item, active } : item,
+                          ),
                         }))
-                      }
+                      }}
                       className="accent-ink"
                     />
-                    Active link
+                    Active
                   </label>
                 </div>
                 <div className="grid gap-3 md:grid-cols-3">

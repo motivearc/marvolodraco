@@ -3,12 +3,17 @@ import { lookbookImages as defaultLookbook } from '../data/content'
 import { products as defaultProducts } from '../data/products'
 import { requireSupabase } from '../lib/supabase'
 import type {
+  CatalogueCategory,
   HeroContent,
   LookbookImage,
   SiteContent,
   WhatsAppContact,
   WhatsAppSettings,
 } from '../types/content'
+import {
+  DEFAULT_CATEGORIES,
+  normalizeCategories,
+} from '../utils/categories'
 import { WHATSAPP_SLOT_COUNT } from '../types/content'
 import type { ProductRow, SiteSettingsRow } from '../types/database'
 import type { Product } from '../types/product'
@@ -36,6 +41,7 @@ export const defaultWhatsApp: WhatsAppSettings = {
 
 export const fallbackContent: SiteContent = {
   products: structuredClone(defaultProducts),
+  categories: DEFAULT_CATEGORIES.map((category) => ({ ...category })),
   hero: { ...defaultHero, images: [...defaultHero.images] },
   aboutImage: brand.aboutImage,
   lookbookImages: [...defaultLookbook],
@@ -48,6 +54,7 @@ export const fallbackContent: SiteContent = {
 /** Empty shell used while Supabase content loads — avoids flashing mockup images. */
 export const bootContent: SiteContent = {
   products: [],
+  categories: DEFAULT_CATEGORIES.map((category) => ({ ...category })),
   hero: {
     eyebrow: brand.name,
     headline: brand.tagline,
@@ -69,6 +76,19 @@ function emptyWhatsAppContact(index: number): WhatsAppContact {
     label: `Line ${index + 1}`,
     number: '',
     display: '',
+    active: false,
+  }
+}
+
+const WHATSAPP_ROTATION_KEY = 'marvolo.whatsapp.rotation'
+let rotationCache: { signature: string; contact: WhatsAppContact } | null = null
+
+function fallbackWhatsAppContact(): WhatsAppContact {
+  return {
+    label: 'Line 1',
+    number: brand.whatsappNumber,
+    display: brand.whatsappDisplay,
+    active: true,
   }
 }
 
@@ -78,13 +98,33 @@ export function normalizeWhatsAppSettings(
 ): WhatsAppSettings {
   const defaults = defaultWhatsApp.contacts
   const source = Array.isArray(contacts) ? contacts : []
+  const hasExplicitActive = source.some(
+    (row) =>
+      !!row &&
+      typeof row === 'object' &&
+      typeof (row as Record<string, unknown>).active === 'boolean',
+  )
+  const parsedIndex =
+    typeof activeIndex === 'number' && Number.isFinite(activeIndex)
+      ? Math.trunc(activeIndex)
+      : 0
+  const clampedIndex = Math.min(
+    Math.max(parsedIndex, 0),
+    WHATSAPP_SLOT_COUNT - 1,
+  )
+
   const normalized: WhatsAppContact[] = Array.from(
     { length: WHATSAPP_SLOT_COUNT },
     (_, index) => {
       const row = source[index]
       const fallback = defaults[index] ?? emptyWhatsAppContact(index)
       if (!row || typeof row !== 'object') {
-        return { ...fallback }
+        return {
+          ...fallback,
+          active: hasExplicitActive
+            ? false
+            : index === clampedIndex && Boolean(fallback.number),
+        }
       }
 
       const record = row as Record<string, unknown>
@@ -100,46 +140,76 @@ export function normalizeWhatsAppSettings(
         typeof record.display === 'string'
           ? record.display.trim()
           : fallback.display
+      const active = hasExplicitActive
+        ? record.active === true && Boolean(number)
+        : index === clampedIndex && Boolean(number)
 
-      return { label, number, display }
+      return { label, number, display, active }
     },
   )
 
-  const parsedIndex =
-    typeof activeIndex === 'number' && Number.isFinite(activeIndex)
-      ? Math.trunc(activeIndex)
-      : 0
-  const clampedIndex = Math.min(
-    Math.max(parsedIndex, 0),
-    WHATSAPP_SLOT_COUNT - 1,
-  )
-  const filledIndex = normalized.findIndex((contact) => contact.number)
-  const resolvedIndex =
-    normalized[clampedIndex]?.number
-      ? clampedIndex
-      : filledIndex >= 0
-        ? filledIndex
-        : 0
+  if (!normalized.some((contact) => contact.active && contact.number)) {
+    const firstFilled = normalized.findIndex((contact) => contact.number)
+    if (firstFilled >= 0) normalized[firstFilled].active = true
+  }
+
+  const resolvedIndex = normalized.findIndex((contact) => contact.active)
 
   return {
     contacts: normalized,
-    activeIndex: resolvedIndex,
+    activeIndex: resolvedIndex >= 0 ? resolvedIndex : 0,
   }
+}
+
+/** Numbers included in the storefront rotation. */
+export function getActiveWhatsAppContacts(
+  settings: WhatsAppSettings,
+): WhatsAppContact[] {
+  const active = settings.contacts.filter(
+    (contact) => contact.active && contact.number,
+  )
+  if (active.length) return active
+  const firstFilled = settings.contacts.find((contact) => contact.number)
+  return firstFilled ? [firstFilled] : []
 }
 
 export function getActiveWhatsAppContact(
   settings: WhatsAppSettings,
 ): WhatsAppContact {
-  const active = settings.contacts[settings.activeIndex]
-  if (active?.number) return active
-  const firstFilled = settings.contacts.find((contact) => contact.number)
-  return (
-    firstFilled ?? {
-      label: 'Line 1',
-      number: brand.whatsappNumber,
-      display: brand.whatsappDisplay,
+  return getActiveWhatsAppContacts(settings)[0] ?? fallbackWhatsAppContact()
+}
+
+/**
+ * Picks the next active number once per visit.
+ * Later reads in the same page keep that number so every order button matches.
+ */
+export function getRotatingWhatsAppContact(
+  settings: WhatsAppSettings,
+): WhatsAppContact {
+  const pool = getActiveWhatsAppContacts(settings)
+  if (!pool.length) return fallbackWhatsAppContact()
+
+  const signature = pool.map((contact) => contact.number).join('|')
+  if (rotationCache?.signature === signature) return rotationCache.contact
+
+  let cursor = 0
+  if (pool.length > 1 && typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(WHATSAPP_ROTATION_KEY)
+      const parsed = raw ? Number.parseInt(raw, 10) : 0
+      cursor = Number.isFinite(parsed) ? parsed : 0
+      localStorage.setItem(
+        WHATSAPP_ROTATION_KEY,
+        String((cursor + 1) % pool.length),
+      )
+    } catch {
+      cursor = 0
     }
-  )
+  }
+
+  const contact = pool[((cursor % pool.length) + pool.length) % pool.length]
+  rotationCache = { signature, contact }
+  return contact
 }
 
 function normalizeHeroImages(
@@ -241,7 +311,10 @@ export async function fetchSiteContent(): Promise<SiteContent> {
   if (settingsResult.error) throw settingsResult.error
   if (lookbookResult.error) throw lookbookResult.error
 
-  const products = (productsResult.data ?? []).map(mapProduct)
+  const loadedProducts = (productsResult.data ?? []).map(mapProduct)
+  const products = loadedProducts.length
+    ? loadedProducts
+    : structuredClone(defaultProducts)
   const settings = settingsResult.data
   const lookbookImages: LookbookImage[] = (lookbookResult.data ?? []).map(
     (row) => ({
@@ -253,7 +326,11 @@ export async function fetchSiteContent(): Promise<SiteContent> {
   )
 
   return {
-    products: products.length ? products : structuredClone(defaultProducts),
+    products,
+    categories: normalizeCategories(
+      settings?.product_categories,
+      products.map((product) => product.category),
+    ),
     hero: mapHero(settings),
     aboutImage: settings?.about_image ?? brand.aboutImage,
     lookbookImages: lookbookImages.length
@@ -276,13 +353,42 @@ export async function upsertProduct(
     .from('products')
     .upsert(toProductRow(product, order), { onConflict: 'id' })
 
-  if (error) throw error
+  if (error) throw new Error(formatSaveError(error.message))
+}
+
+export async function updateProductCategories(
+  categories: CatalogueCategory[],
+): Promise<void> {
+  const client = requireSupabase()
+  const { data, error } = await client
+    .from('site_settings')
+    .update({ product_categories: categories })
+    .eq('id', 1)
+    .select('id')
+
+  if (error) throw new Error(formatSaveError(error.message))
+  if (!data?.length) {
+    throw new Error(
+      'Site settings are missing. Open the Site tab and save once, then try again.',
+    )
+  }
 }
 
 export async function deleteProduct(id: string): Promise<void> {
   const client = requireSupabase()
   const { error } = await client.from('products').delete().eq('id', id)
   if (error) throw error
+}
+
+export async function reorderProducts(ids: string[]): Promise<void> {
+  const client = requireSupabase()
+  const results = await Promise.all(
+    ids.map((id, index) =>
+      client.from('products').update({ sort_order: index + 1 }).eq('id', id),
+    ),
+  )
+  const failed = results.find((result) => result.error)
+  if (failed?.error) throw new Error(formatSaveError(failed.error.message))
 }
 
 export async function updateSiteSettings(input: {
@@ -395,6 +501,12 @@ function formatSaveError(message: string): string {
   ) {
     return 'WhatsApp columns are missing. Run supabase/migrate-whatsapp.sql in the Supabase SQL Editor, then try again.'
   }
+  if (
+    lower.includes('product_categories') ||
+    lower.includes('products_category_check')
+  ) {
+    return 'Custom categories are not enabled yet. Run supabase/migrate-categories.sql in the Supabase SQL Editor, then try again.'
+  }
   return message
 }
 
@@ -483,10 +595,21 @@ export async function resetSiteContent(): Promise<SiteContent> {
     whatsapp,
   })
 
+  const categories = DEFAULT_CATEGORIES.map((category) => ({ ...category }))
+  try {
+    await updateProductCategories(categories)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : ''
+    if (!message.toLowerCase().includes('custom categories are not enabled')) {
+      throw err
+    }
+  }
+
   const lookbookImages = await replaceLookbookImages([...defaultLookbook])
 
   return {
     products: structuredClone(defaultProducts),
+    categories,
     hero,
     aboutImage: brand.aboutImage,
     lookbookImages,
