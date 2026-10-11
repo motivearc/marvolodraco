@@ -8,13 +8,8 @@ export const products: Product[] = [
     description:
       'A relaxed linen overshirt with a clean collar and soft structure. Layer over tees or wear open for an easy smart-casual look.',
     price: 189,
-    mainImage:
-      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colours: [
       { name: 'Sand', hex: '#C8B9A6' },
@@ -34,13 +29,8 @@ export const products: Product[] = [
     description:
       'A refined everyday tee cut from dense combed cotton. Soft hand-feel with a clean crew neck and precise shoulder line.',
     price: 89,
-    mainImage:
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colours: [
       { name: 'White', hex: '#FFFFFF' },
@@ -60,13 +50,8 @@ export const products: Product[] = [
     description:
       'Streamlined chino trousers with a soft taper and comfortable mid-rise. Designed for all-day wear from desk to dinner.',
     price: 219,
-    mainImage:
-      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1506629082955-511b1aa782c0?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colours: [
       { name: 'Khaki', hex: '#B7A78D' },
@@ -86,13 +71,8 @@ export const products: Product[] = [
     description:
       'An understated overcoat with a fluid drape and minimal lapel. Built for cooler evenings and polished layering.',
     price: 489,
-    mainImage:
-      'https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL'],
     colours: [
       { name: 'Camel', hex: '#C19A6B' },
@@ -111,13 +91,8 @@ export const products: Product[] = [
     description:
       'A classic Oxford shirt with a soft collar and clean placket. The everyday foundation of a refined wardrobe.',
     price: 169,
-    mainImage:
-      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1563630423918-b58f07336ac5?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colours: [
       { name: 'Sky', hex: '#B8C9D6' },
@@ -137,13 +112,8 @@ export const products: Product[] = [
     description:
       'A fine-gauge merino crew knit that feels light against the skin. Breathable, temperature-regulating and quietly luxurious.',
     price: 159,
-    mainImage:
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1618354691438-25bc04584c23?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL'],
     colours: [
       { name: 'Oatmeal', hex: '#D9CBB8' },
@@ -163,13 +133,8 @@ export const products: Product[] = [
     description:
       'Fluid wide-leg trousers with soft front pleats. A modern silhouette that moves with ease and photographs beautifully.',
     price: 249,
-    mainImage:
-      'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1506629082955-511b1aa782c0?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL'],
     colours: [
       { name: 'Ivory', hex: '#F0EBE3' },
@@ -189,13 +154,8 @@ export const products: Product[] = [
     description:
       'A soft-shouldered blazer with a lightly structured chest. Transition seamlessly from meetings to evenings out.',
     price: 399,
-    mainImage:
-      'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colours: [
       { name: 'Charcoal', hex: '#3F3F3F' },
@@ -214,13 +174,8 @@ export const products: Product[] = [
     description:
       'A lightweight field jacket with clean pocket detailing and a matte finish. Practical layering without visual noise.',
     price: 329,
-    mainImage:
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1548126032-077b8ce795ee?auto=format&fit=crop&w=900&q=80',
-    ],
+    mainImage: '',
+    images: [],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colours: [
       { name: 'Olive', hex: '#5C6648' },

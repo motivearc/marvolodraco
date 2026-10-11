@@ -4,6 +4,9 @@ import { SectionHeading } from './SectionHeading'
 
 export function Lookbook() {
   const { lookbookImages } = useContent()
+  const images = lookbookImages.filter((image) => image.src.trim())
+
+  if (!images.length) return null
 
   return (
     <section className="bg-cream px-5 py-20 md:px-8 md:py-28 lg:px-10">
@@ -25,7 +28,7 @@ export function Lookbook() {
         </div>
 
         <div className="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[220px] md:grid-cols-4 md:gap-4 lg:auto-rows-[260px]">
-          {lookbookImages.map((image, index) => (
+          {images.map((image, index) => (
             <div
               key={`${image.src}-${index}`}
               className={`overflow-hidden ${

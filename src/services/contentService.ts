@@ -19,11 +19,7 @@ import type { ProductRow, SiteSettingsRow } from '../types/database'
 import type { Product } from '../types/product'
 import { normalizeWhatsAppNumber } from '../utils/whatsapp'
 
-export const defaultHeroImages = [
-  brand.heroImage,
-  'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=2000&q=80',
-]
+export const defaultHeroImages: string[] = []
 
 export const defaultHero: HeroContent = {
   eyebrow: brand.name,
@@ -31,7 +27,7 @@ export const defaultHero: HeroContent = {
   description: brand.description,
   primaryCta: 'View Collection',
   secondaryCta: 'Order on WhatsApp',
-  images: [...defaultHeroImages],
+  images: [],
 }
 
 export const defaultWhatsApp: WhatsAppSettings = {
@@ -224,7 +220,7 @@ function normalizeHeroImages(
     if (cleaned.length) return cleaned
   }
   if (fallbackImage?.trim()) return [fallbackImage]
-  return [...defaultHeroImages]
+  return []
 }
 
 function mapProduct(row: ProductRow): Product {

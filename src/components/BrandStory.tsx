@@ -21,14 +21,21 @@ export function BrandStory() {
             {brand.philosophy}
           </p>
         </div>
-        <div className="order-1 overflow-hidden lg:order-2">
-          <img
-            src={aboutImage}
-            alt={`${brand.name} lifestyle and brand atmosphere`}
-            loading="lazy"
-            decoding="async"
-            className="aspect-[4/5] w-full object-cover md:aspect-[5/6]"
-          />
+        <div className="order-1 overflow-hidden bg-cream-dark lg:order-2">
+          {aboutImage ? (
+            <img
+              src={aboutImage}
+              alt={`${brand.name} lifestyle and brand atmosphere`}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/5] w-full object-cover md:aspect-[5/6]"
+            />
+          ) : (
+            <div
+              className="aspect-[4/5] w-full md:aspect-[5/6]"
+              aria-hidden="true"
+            />
+          )}
         </div>
       </div>
     </section>

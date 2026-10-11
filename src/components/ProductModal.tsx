@@ -79,11 +79,13 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
         <div className="grid overflow-y-auto lg:grid-cols-2">
           <div className="bg-cream-dark">
             <div className="aspect-[4/5] overflow-hidden">
-              <img
-                src={product.images[activeImage] ?? product.mainImage}
-                alt={`${product.name} view ${activeImage + 1}`}
-                className="h-full w-full object-cover"
-              />
+              {(product.images[activeImage] ?? product.mainImage) ? (
+                <img
+                  src={product.images[activeImage] ?? product.mainImage}
+                  alt={`${product.name} view ${activeImage + 1}`}
+                  className="h-full w-full object-cover"
+                />
+              ) : null}
             </div>
             {product.images.length > 1 ? (
               <div className="flex gap-2 overflow-x-auto p-3">

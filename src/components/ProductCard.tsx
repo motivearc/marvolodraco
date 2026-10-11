@@ -15,15 +15,17 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
         aria-label={`View ${product.name}`}
         className="relative mb-4 aspect-[3/4] w-full cursor-pointer overflow-hidden bg-cream-dark text-left"
       >
-        <img
-          src={product.mainImage}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className={`h-full w-full object-cover transition duration-700 group-hover:scale-[1.03] ${
-            product.available ? '' : 'opacity-70 grayscale'
-          }`}
-        />
+        {product.mainImage ? (
+          <img
+            src={product.mainImage}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className={`h-full w-full object-cover transition duration-700 group-hover:scale-[1.03] ${
+              product.available ? '' : 'opacity-70 grayscale'
+            }`}
+          />
+        ) : null}
         {!product.available ? (
           <span className="absolute top-3 left-3 bg-ink px-2.5 py-1 text-[10px] font-semibold tracking-[0.16em] text-cream uppercase">
             Sold Out

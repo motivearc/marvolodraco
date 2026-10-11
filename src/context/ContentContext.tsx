@@ -88,7 +88,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           ? err.message
           : 'Failed to load content from Supabase.',
       )
-      // Keep boot/previous content — do not flash Unsplash mockups on failure.
+      // Keep boot/previous content on failure.
     } finally {
       setLoading(false)
     }

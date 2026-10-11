@@ -26,8 +26,6 @@ export const brand = {
   instagramUrl: 'https://www.instagram.com/marvolodraco.mvd?igsh=dWtydWxoZzNkM2Rz',
   instagramHandle: '@marvolo',
   email: 'marvolodraco.mvd@gmail.com',
-  heroImage:
-    'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=80',
-  aboutImage:
-    'https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=80',
+  heroImage: '',
+  aboutImage: '',
 } as const

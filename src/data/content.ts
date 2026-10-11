@@ -1,3 +1,5 @@
+import type { LookbookImage } from '../types/content'
+
 export const reviews = [
   {
     id: 1,
@@ -66,35 +68,4 @@ export const sizeGuide = [
   { size: 'XXL', chest: '114–120', shoulder: '50', sleeve: '66', length: '78' },
 ] as const
 
-export const lookbookImages = [
-  {
-    src: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80',
-    alt: 'Editorial look featuring tailored outerwear',
-    span: 'tall' as const,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=900&q=80',
-    alt: 'Lifestyle street style lookbook image',
-    span: 'wide' as const,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80',
-    alt: 'Model wearing contemporary smart-casual outfit',
-    span: 'normal' as const,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=900&q=80',
-    alt: 'Close-up of premium fabric and silhouette',
-    span: 'normal' as const,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&w=900&q=80',
-    alt: 'Menswear campaign lookbook portrait',
-    span: 'tall' as const,
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80',
-    alt: 'Minimal fashion lookbook composition',
-    span: 'wide' as const,
-  },
-]
+export const lookbookImages: LookbookImage[] = []
