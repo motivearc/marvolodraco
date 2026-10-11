@@ -136,6 +136,19 @@ export function Footer() {
         </p>
         <p>Catalogue only — orders completed via WhatsApp.</p>
       </div>
+
+      <div className="mx-auto mt-4 max-w-7xl text-center text-[11px] text-sand/60 sm:text-xs">
+        <span>Developed by </span>
+        <a
+          href="https://motivearc.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="transition-colors hover:text-cream"
+        >
+          Motive Arc
+          <sup className="ml-0.5 text-[9px]">™</sup>
+        </a>
+      </div>
     </footer>
   )
 }
