@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { PWABottomNavigation } from './components/pwa/PWABottomNavigation'
 import { PWAInstallInstructions } from './components/pwa/PWAInstallInstructions'
@@ -10,8 +11,9 @@ import { AuthProvider } from './context/AuthContext'
 import { ContentProvider } from './context/ContentContext'
 import { AdminPage } from './pages/AdminPage'
 import { StorefrontPage } from './pages/StorefrontPage'
+import { isAdminPwaShell } from './utils/adminPwa'
 
-export default function App() {
+function AppShell({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
       <ContentProvider>
@@ -22,15 +24,34 @@ export default function App() {
             <PWAUpdatePrompt />
             <PWAInstallPrompt />
             <PWAInstallInstructions />
-            <PWABottomNavigation />
-            <Routes>
-              <Route path="/" element={<StorefrontPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            {children}
           </PWAInstallProvider>
         </BrowserRouter>
       </ContentProvider>
     </AuthProvider>
+  )
+}
+
+export default function App() {
+  // Dedicated admin.html entry: always the admin app (login + dashboard).
+  // Home Screen installs that open admin.html never fall through to the storefront.
+  if (isAdminPwaShell()) {
+    return (
+      <AppShell>
+        <AdminPage />
+      </AppShell>
+    )
+  }
+
+  return (
+    <AppShell>
+      <PWABottomNavigation />
+      <Routes>
+        <Route path="/" element={<StorefrontPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin.html" element={<Navigate to="/admin" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AppShell>
   )
 }

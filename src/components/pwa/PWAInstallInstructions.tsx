@@ -125,7 +125,7 @@ function renderSteps(
           icon={Share}
           label={
             admin
-              ? 'Stay on this Admin page in Safari (address should end with /admin).'
+              ? 'Stay on the Admin app page in Safari (address should end with /admin.html).'
               : 'Open this website using Safari.'
           }
         />

@@ -1,4 +1,5 @@
 import { pwaConfig } from '../config/pwa'
+import { isAdminPwaShell } from './adminPwa'
 
 export const PWA_DISMISS_KEY = 'pwa-install-dismissed'
 export const ADMIN_MANIFEST_HREF = '/admin.webmanifest'
@@ -7,12 +8,16 @@ export const ADMIN_PWA_INSTALL_PENDING_KEY = 'admin-pwa-install-pending'
 export const ADMIN_MANIFEST_READY_KEY = 'admin-manifest-ready'
 
 export function isAdminRoute(pathname: string) {
-  return pathname === '/admin' || pathname.startsWith('/admin/')
+  return (
+    pathname === '/admin' ||
+    pathname === '/admin.html' ||
+    pathname.startsWith('/admin/')
+  )
 }
 
-/** Keep the active manifest in sync with the current path. */
+/** Keep the active manifest in sync with the current path / shell. */
 export function applyManifestForPath(pathname: string) {
-  const admin = isAdminRoute(pathname)
+  const admin = isAdminPwaShell() || isAdminRoute(pathname)
   const href = admin ? ADMIN_MANIFEST_HREF : CUSTOMER_MANIFEST_HREF
   const links = Array.from(
     document.querySelectorAll<HTMLLinkElement>('link[rel="manifest"]'),
@@ -41,9 +46,9 @@ export function applyManifestForPath(pathname: string) {
     )
   }
 
-  // Only a full document load of /admin (index.html boot script) may set
+  // Only a full document load of admin.html (or /admin boot script) may set
   // ADMIN_MANIFEST_READY_KEY. Client-side navigations must clear it so install
-  // forces a reload and the browser binds to admin.webmanifest.
+  // forces a reload onto the admin shell.
   try {
     if (!admin) {
       sessionStorage.removeItem(ADMIN_MANIFEST_READY_KEY)
@@ -56,6 +61,7 @@ export function applyManifestForPath(pathname: string) {
 }
 
 export function isAdminManifestReady() {
+  if (isAdminPwaShell()) return true
   try {
     if (sessionStorage.getItem(ADMIN_MANIFEST_READY_KEY) !== '1') return false
   } catch {
@@ -88,12 +94,12 @@ export function setAdminInstallPending(pending: boolean) {
 }
 
 /**
- * Full document load of /admin so the browser binds install to admin.webmanifest
- * (client-side React navigation alone is not enough).
+ * Full document load of admin.html so the browser binds install to the admin
+ * shell (login + dashboard) instead of the storefront.
  */
 export function hardNavigateForAdminInstall() {
   setAdminInstallPending(true)
-  const url = new URL('/admin', window.location.origin)
+  const url = new URL('/admin.html', window.location.origin)
   url.searchParams.set('pwa', 'admin')
   window.location.replace(url.toString())
 }

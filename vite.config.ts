@@ -1,11 +1,22 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const rootDir = dirname(fileURLToPath(import.meta.url))
 const networkOnly = { handler: 'NetworkOnly' as const }
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(rootDir, 'index.html'),
+        admin: resolve(rootDir, 'admin.html'),
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -22,18 +33,18 @@ export default defineConfig({
         'android-chrome-512x512.png',
         'site.webmanifest',
         'admin.webmanifest',
-        'admin.html',
         'icons/icon-192.png',
         'icons/icon-512.png',
         'icons/icon-192-maskable.png',
         'icons/icon-512-maskable.png',
       ],
-      // Storefront + admin manifests live in /public so /admin can swap
-      // start_url without fighting a second injected manifest link.
+      // Storefront + admin manifests live in /public so each HTML entry can
+      // point at the correct start_url without an injected duplicate.
       manifest: false,
       workbox: {
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        // Keep admin.html as its own document (do not SPA-fallback it to index).
+        navigateFallbackDenylist: [/^\/api\//, /admin\.html$/],
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest,woff2}'],
         runtimeCaching: [
           { urlPattern: /^https:\/\/[^/]*\.supabase\.co\/.*/i, ...networkOnly },

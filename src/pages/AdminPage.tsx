@@ -21,6 +21,7 @@ import { AdminSizeGuide } from '../components/admin/AdminSizeGuide'
 import { brand } from '../data/brand'
 import { usePWAInstall } from '../hooks/usePWAInstall'
 import { fetchAllReviews } from '../services/reviewService'
+import { isAdminPwaShell } from '../utils/adminPwa'
 
 type AdminTab = 'products' | 'images' | 'size-guide' | 'faqs' | 'reviews'
 
@@ -35,6 +36,7 @@ export function AdminPage() {
     clearError,
   } = useContent()
   const { showInstallAction, requestInstall } = usePWAInstall()
+  const adminShell = isAdminPwaShell()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState<string | null>(null)
@@ -42,6 +44,55 @@ export function AdminPage() {
   const [tab, setTab] = useState<AdminTab>('products')
   const [pendingReviews, setPendingReviews] = useState(0)
   const [reviewTick, setReviewTick] = useState(0)
+
+  // In the admin.html PWA shell, always leave via a full load of the storefront entry.
+  const storefrontLink = adminShell ? (
+    <a
+      href="/"
+      className="inline-flex items-center gap-2 bg-ink px-3 py-2 text-xs font-semibold tracking-[0.12em] text-cream uppercase transition hover:bg-ink-soft"
+    >
+      <ArrowLeft className="size-3.5" />
+      View site
+    </a>
+  ) : (
+    <Link
+      to="/"
+      className="inline-flex items-center gap-2 bg-ink px-3 py-2 text-xs font-semibold tracking-[0.12em] text-cream uppercase transition hover:bg-ink-soft"
+    >
+      <ArrowLeft className="size-3.5" />
+      View site
+    </Link>
+  )
+  const storefrontTextLink = adminShell ? (
+    <a
+      href="/"
+      className="inline-flex text-xs tracking-[0.12em] text-stone uppercase hover:text-ink"
+    >
+      Back to site
+    </a>
+  ) : (
+    <Link
+      to="/"
+      className="inline-flex text-xs tracking-[0.12em] text-stone uppercase hover:text-ink"
+    >
+      Back to site
+    </Link>
+  )
+  const storefrontCenteredLink = adminShell ? (
+    <a
+      href="/"
+      className="block text-center text-xs tracking-[0.12em] text-stone uppercase hover:text-ink"
+    >
+      Back to site
+    </a>
+  ) : (
+    <Link
+      to="/"
+      className="block text-center text-xs tracking-[0.12em] text-stone uppercase hover:text-ink"
+    >
+      Back to site
+    </Link>
+  )
 
   useEffect(() => {
     document.title = `Admin · ${brand.name}`
@@ -99,12 +150,7 @@ export function AdminPage() {
             {`VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key`}
           </pre>
-          <Link
-            to="/"
-            className="inline-flex text-xs tracking-[0.12em] text-stone uppercase hover:text-ink"
-          >
-            Back to site
-          </Link>
+          {storefrontTextLink}
         </div>
       </div>
     )
@@ -169,12 +215,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
           >
             {signingIn ? 'Signing in…' : 'Sign in'}
           </button>
-          <Link
-            to="/"
-            className="block text-center text-xs tracking-[0.12em] text-stone uppercase hover:text-ink"
-          >
-            Back to site
-          </Link>
+          {storefrontCenteredLink}
         </form>
       </div>
     )
@@ -233,13 +274,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               <LogOut className="size-3.5" />
               Sign out
             </button>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 bg-ink px-3 py-2 text-xs font-semibold tracking-[0.12em] text-cream uppercase transition hover:bg-ink-soft"
-            >
-              <ArrowLeft className="size-3.5" />
-              View site
-            </Link>
+            {storefrontLink}
           </div>
         </div>
       </header>

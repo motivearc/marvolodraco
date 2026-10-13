@@ -10,6 +10,7 @@ import {
 import { useLocation } from 'react-router-dom'
 import { pwaConfig } from '../config/pwa'
 import { getInstallPlatform, type InstallPlatform } from '../utils/deviceDetection'
+import { isAdminPwaShell } from '../utils/adminPwa'
 import {
   hardNavigateForAdminInstall,
   isAdminManifestReady,
@@ -48,7 +49,7 @@ export const PWAInstallContext = createContext<PWAInstallContextValue | null>(nu
 export function usePWAInstallController(): PWAInstallContextValue {
   const standalone = useIsStandalone()
   const { pathname } = useLocation()
-  const admin = isAdminRoute(pathname)
+  const admin = isAdminPwaShell() || isAdminRoute(pathname)
   const routeKey = useRef(pathname)
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null)
   const [canNativeInstall, setCanNativeInstall] = useState(false)

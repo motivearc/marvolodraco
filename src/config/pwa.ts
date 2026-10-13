@@ -20,7 +20,7 @@ export const pwaConfig = {
     'Add this website to your Home Screen for faster access and a more app-like experience.',
   adminInstallTitle: 'Install Admin App',
   adminInstallMessage:
-    'Install from this page after it fully reloads. The Home Screen shortcut opens Admin (admin.html → /admin), not the storefront.',
+    'Adds the Admin app (login + dashboard). The Home Screen shortcut opens admin.html — not the storefront.',
   themeColor: '#1c1b1a',
   backgroundColor: '#f6f3ee',
   name: brand.name,
