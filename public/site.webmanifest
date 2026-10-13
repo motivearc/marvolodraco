@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Marvolo",
   "short_name": "Marvolo",
   "description": "Discover premium clothing designed for effortless confidence, comfort and everyday sophistication.",
@@ -10,14 +11,28 @@
   "background_color": "#f6f3ee",
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

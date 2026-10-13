@@ -21,49 +21,15 @@ export default defineConfig({
         'android-chrome-192x192.png',
         'android-chrome-512x512.png',
         'site.webmanifest',
+        'admin.webmanifest',
         'icons/icon-192.png',
         'icons/icon-512.png',
         'icons/icon-192-maskable.png',
         'icons/icon-512-maskable.png',
       ],
-      manifest: {
-        name: 'Marvolo',
-        short_name: 'Marvolo',
-        description:
-          'Discover premium clothing designed for effortless confidence, comfort and everyday sophistication.',
-        start_url: '/',
-        scope: '/',
-        display: 'standalone',
-        lang: 'en',
-        theme_color: '#1c1b1a',
-        background_color: '#f6f3ee',
-        icons: [
-          {
-            src: '/icons/icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: '/icons/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: '/icons/icon-192-maskable.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
-          {
-            src: '/icons/icon-512-maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
-        ],
-      },
+      // Storefront + admin manifests live in /public so /admin can swap
+      // start_url without fighting a second injected manifest link.
+      manifest: false,
       workbox: {
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],

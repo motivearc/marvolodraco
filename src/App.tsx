@@ -3,6 +3,7 @@ import { PWABottomNavigation } from './components/pwa/PWABottomNavigation'
 import { PWAInstallInstructions } from './components/pwa/PWAInstallInstructions'
 import { PWAInstallPrompt } from './components/pwa/PWAInstallPrompt'
 import { PWAInstallProvider } from './components/pwa/PWAInstallProvider'
+import { PWAManifestLink } from './components/pwa/PWAManifestLink'
 import { PWAOfflineNotice } from './components/pwa/PWAOfflineNotice'
 import { PWAUpdatePrompt } from './components/pwa/PWAUpdatePrompt'
 import { AuthProvider } from './context/AuthContext'
@@ -16,6 +17,7 @@ export default function App() {
       <ContentProvider>
         <BrowserRouter>
           <PWAInstallProvider>
+            <PWAManifestLink />
             <PWAOfflineNotice />
             <PWAUpdatePrompt />
             <PWAInstallPrompt />

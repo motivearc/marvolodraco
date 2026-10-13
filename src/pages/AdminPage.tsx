@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   ArrowLeft,
   CircleHelp,
+  Download,
   ImageIcon,
   LogOut,
   Package,
@@ -18,6 +19,7 @@ import { AdminProducts } from '../components/admin/AdminProducts'
 import { AdminReviews } from '../components/admin/AdminReviews'
 import { AdminSizeGuide } from '../components/admin/AdminSizeGuide'
 import { brand } from '../data/brand'
+import { usePWAInstall } from '../hooks/usePWAInstall'
 import { fetchAllReviews } from '../services/reviewService'
 
 type AdminTab = 'products' | 'images' | 'size-guide' | 'faqs' | 'reviews'
@@ -32,6 +34,7 @@ export function AdminPage() {
     error,
     clearError,
   } = useContent()
+  const { showInstallAction, requestInstall } = usePWAInstall()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState<string | null>(null)
@@ -195,6 +198,16 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               <span className="text-xs tracking-[0.12em] text-stone uppercase">
                 Saving…
               </span>
+            ) : null}
+            {showInstallAction ? (
+              <button
+                type="button"
+                onClick={() => void requestInstall()}
+                className="inline-flex items-center gap-2 border border-line px-3 py-2 text-xs font-medium tracking-[0.12em] text-ink-soft uppercase transition hover:border-ink hover:text-ink"
+              >
+                <Download className="size-3.5" />
+                Install app
+              </button>
             ) : null}
             <button
               type="button"
