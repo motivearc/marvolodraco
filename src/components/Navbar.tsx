@@ -9,7 +9,7 @@ import { buildWhatsAppGeneralUrl } from '../utils/whatsapp'
 
 const navLinks = [
   { label: 'Home', href: '#home' },
-  { label: 'New Arrivals', href: '#new-arrivals' },
+  { label: 'FEATURED', href: '#featured' },
   { label: 'Collection', href: '#collection' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },

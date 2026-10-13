@@ -34,6 +34,30 @@ export type CatalogueCategory = {
   label: string
 }
 
+export type SizeGuideColumn = {
+  id: string
+  label: string
+}
+
+export type SizeGuideRow = {
+  size: string
+  values: Record<string, string>
+}
+
+export type SizeGuideChart = {
+  id: string
+  label: string
+  /** Product categories that should open this chart in the product modal. */
+  categoryIds: string[]
+  columns: SizeGuideColumn[]
+  rows: SizeGuideRow[]
+}
+
+export type FaqItem = {
+  question: string
+  answer: string
+}
+
 export type SiteContent = {
   products: Product[]
   categories: CatalogueCategory[]
@@ -41,6 +65,8 @@ export type SiteContent = {
   aboutImage: string
   lookbookImages: LookbookImage[]
   whatsapp: WhatsAppSettings
+  sizeGuides: SizeGuideChart[]
+  faqs: FaqItem[]
 }
 
 export const WHATSAPP_SLOT_COUNT = 3

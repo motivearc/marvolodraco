@@ -4,19 +4,31 @@ import { products as defaultProducts } from '../data/products'
 import { requireSupabase } from '../lib/supabase'
 import type {
   CatalogueCategory,
+  FaqItem,
   HeroContent,
   LookbookImage,
   SiteContent,
+  SizeGuideChart,
   WhatsAppContact,
   WhatsAppSettings,
 } from '../types/content'
+import { WHATSAPP_SLOT_COUNT } from '../types/content'
 import {
   DEFAULT_CATEGORIES,
   normalizeCategories,
 } from '../utils/categories'
-import { WHATSAPP_SLOT_COUNT } from '../types/content'
+import {
+  createDefaultFaqs,
+  normalizeFaqs,
+  sanitizeFaqs,
+} from '../utils/faqs'
 import type { ProductRow, SiteSettingsRow } from '../types/database'
 import type { Product } from '../types/product'
+import {
+  createDefaultSizeGuides,
+  normalizeSizeGuides,
+  sanitizeSizeGuides,
+} from '../utils/sizeGuides'
 import { normalizeWhatsAppNumber } from '../utils/whatsapp'
 
 export const defaultHeroImages: string[] = []
@@ -45,6 +57,8 @@ export const fallbackContent: SiteContent = {
     contacts: defaultWhatsApp.contacts.map((contact) => ({ ...contact })),
     activeIndex: defaultWhatsApp.activeIndex,
   },
+  sizeGuides: createDefaultSizeGuides(),
+  faqs: createDefaultFaqs(),
 }
 
 /** Empty shell used while Supabase content loads — avoids flashing mockup images. */
@@ -65,6 +79,8 @@ export const bootContent: SiteContent = {
     contacts: defaultWhatsApp.contacts.map((contact) => ({ ...contact })),
     activeIndex: defaultWhatsApp.activeIndex,
   },
+  sizeGuides: createDefaultSizeGuides(),
+  faqs: createDefaultFaqs(),
 }
 
 function emptyWhatsAppContact(index: number): WhatsAppContact {
@@ -333,6 +349,8 @@ export async function fetchSiteContent(): Promise<SiteContent> {
       ? lookbookImages
       : [...defaultLookbook],
     whatsapp: mapWhatsApp(settings),
+    sizeGuides: normalizeSizeGuides(settings?.size_guides),
+    faqs: normalizeFaqs(settings?.faqs),
   }
 }
 
@@ -391,6 +409,8 @@ export async function updateSiteSettings(input: {
   hero?: HeroContent
   aboutImage?: string
   whatsapp?: WhatsAppSettings
+  sizeGuides?: SizeGuideChart[]
+  faqs?: FaqItem[]
 }): Promise<void> {
   const client = requireSupabase()
   const hero = input.hero ?? {
@@ -403,6 +423,12 @@ export async function updateSiteSettings(input: {
     input.whatsapp?.contacts ?? defaultWhatsApp.contacts,
     input.whatsapp?.activeIndex ?? defaultWhatsApp.activeIndex,
   )
+  const sizeGuides =
+    input.sizeGuides !== undefined
+      ? sanitizeSizeGuides(input.sizeGuides)
+      : undefined
+  const faqs =
+    input.faqs !== undefined ? sanitizeFaqs(input.faqs) : undefined
 
   const basePayload = {
     id: 1,
@@ -420,6 +446,8 @@ export async function updateSiteSettings(input: {
     hero_images: images,
     whatsapp_contacts: whatsapp.contacts,
     whatsapp_active_index: whatsapp.activeIndex,
+    ...(sizeGuides !== undefined ? { size_guides: sizeGuides } : {}),
+    ...(faqs !== undefined ? { faqs } : {}),
   }
 
   const { error } = await client
@@ -429,6 +457,23 @@ export async function updateSiteSettings(input: {
   if (!error) return
 
   const message = error.message.toLowerCase()
+  if (
+    message.includes('size_guides') &&
+    (message.includes('column') || message.includes('schema cache'))
+  ) {
+    throw new Error(
+      'Size guide column is missing. Run supabase/migrate-size-guides.sql in the Supabase SQL Editor, then try again.',
+    )
+  }
+  if (
+    message.includes('faqs') &&
+    (message.includes('column') || message.includes('schema cache'))
+  ) {
+    throw new Error(
+      'FAQ column is missing. Run supabase/migrate-faqs.sql in the Supabase SQL Editor, then try again.',
+    )
+  }
+
   const missingSliderColumn =
     message.includes('hero_images') &&
     (message.includes('column') || message.includes('schema cache'))
@@ -502,6 +547,12 @@ function formatSaveError(message: string): string {
     lower.includes('products_category_check')
   ) {
     return 'Custom categories are not enabled yet. Run supabase/migrate-categories.sql in the Supabase SQL Editor, then try again.'
+  }
+  if (lower.includes('size_guides')) {
+    return 'Size guide column is missing. Run supabase/migrate-size-guides.sql in the Supabase SQL Editor, then try again.'
+  }
+  if (lower.includes('faqs')) {
+    return 'FAQ column is missing. Run supabase/migrate-faqs.sql in the Supabase SQL Editor, then try again.'
   }
   return message
 }
@@ -584,12 +635,49 @@ export async function resetSiteContent(): Promise<SiteContent> {
     contacts: defaultWhatsApp.contacts.map((contact) => ({ ...contact })),
     activeIndex: defaultWhatsApp.activeIndex,
   }
+  const sizeGuides = createDefaultSizeGuides()
+  const faqs = createDefaultFaqs()
 
-  await updateSiteSettings({
-    hero,
-    aboutImage: brand.aboutImage,
-    whatsapp,
-  })
+  try {
+    await updateSiteSettings({
+      hero,
+      aboutImage: brand.aboutImage,
+      whatsapp,
+      sizeGuides,
+      faqs,
+    })
+  } catch (err) {
+    const message = (err instanceof Error ? err.message : '').toLowerCase()
+    const missingSizeGuides = message.includes('size guide column is missing')
+    const missingFaqs = message.includes('faq column is missing')
+    if (!missingSizeGuides && !missingFaqs) throw err
+
+    try {
+      await updateSiteSettings({
+        hero,
+        aboutImage: brand.aboutImage,
+        whatsapp,
+        ...(missingSizeGuides ? {} : { sizeGuides }),
+        ...(missingFaqs ? {} : { faqs }),
+      })
+    } catch (inner) {
+      const innerMessage = (
+        inner instanceof Error ? inner.message : ''
+      ).toLowerCase()
+      if (
+        innerMessage.includes('size guide column is missing') ||
+        innerMessage.includes('faq column is missing')
+      ) {
+        await updateSiteSettings({
+          hero,
+          aboutImage: brand.aboutImage,
+          whatsapp,
+        })
+      } else {
+        throw inner
+      }
+    }
+  }
 
   const categories = DEFAULT_CATEGORIES.map((category) => ({ ...category }))
   try {
@@ -610,5 +698,7 @@ export async function resetSiteContent(): Promise<SiteContent> {
     aboutImage: brand.aboutImage,
     lookbookImages,
     whatsapp,
+    sizeGuides,
+    faqs,
   }
 }

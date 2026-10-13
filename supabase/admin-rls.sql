@@ -63,3 +63,24 @@ create policy "Admin delete media"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'media' and public.is_admin());
+
+-- Reviews: public can submit pending notes; admins approve them.
+-- Skipped when the table has not been created yet.
+do $$
+begin
+  if to_regclass('public.reviews') is null then
+    return;
+  end if;
+
+  execute 'drop policy if exists "Public read reviews" on public.reviews';
+  execute 'create policy "Public read reviews" on public.reviews for select to anon, authenticated using (status = ''approved'' or public.is_admin())';
+
+  execute 'drop policy if exists "Public submit reviews" on public.reviews';
+  execute 'create policy "Public submit reviews" on public.reviews for insert to anon, authenticated with check (status = ''pending'')';
+
+  execute 'drop policy if exists "Admin update reviews" on public.reviews';
+  execute 'create policy "Admin update reviews" on public.reviews for update to authenticated using (public.is_admin()) with check (public.is_admin())';
+
+  execute 'drop policy if exists "Admin delete reviews" on public.reviews';
+  execute 'create policy "Admin delete reviews" on public.reviews for delete to authenticated using (public.is_admin())';
+end $$;

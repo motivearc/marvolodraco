@@ -44,6 +44,77 @@ on conflict (id) do update set
   whatsapp_contacts = excluded.whatsapp_contacts,
   whatsapp_active_index = excluded.whatsapp_active_index;
 
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'site_settings'
+      and column_name = 'size_guides'
+  ) then
+    update public.site_settings
+    set size_guides = '[
+      {
+        "id": "tops",
+        "label": "Tops",
+        "categoryIds": ["shirts", "t-shirts", "outerwear"],
+        "columns": [
+          {"id": "chest", "label": "Chest (cm)"},
+          {"id": "shoulder", "label": "Shoulder (cm)"},
+          {"id": "sleeve", "label": "Sleeve (cm)"},
+          {"id": "length", "label": "Length (cm)"}
+        ],
+        "rows": [
+          {"size": "S", "values": {"chest": "96–100", "shoulder": "42", "sleeve": "62", "length": "70"}},
+          {"size": "M", "values": {"chest": "100–104", "shoulder": "44", "sleeve": "63", "length": "72"}},
+          {"size": "L", "values": {"chest": "104–108", "shoulder": "46", "sleeve": "64", "length": "74"}},
+          {"size": "XL", "values": {"chest": "108–114", "shoulder": "48", "sleeve": "65", "length": "76"}},
+          {"size": "XXL", "values": {"chest": "114–120", "shoulder": "50", "sleeve": "66", "length": "78"}}
+        ]
+      }
+    ]'::jsonb
+    where id = 1;
+  end if;
+
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'site_settings'
+      and column_name = 'faqs'
+  ) then
+    update public.site_settings
+    set faqs = '[
+      {
+        "question": "How do I place an order?",
+        "answer": "Browse the collection, open a product, select your preferred colour and size, then tap “Order via WhatsApp”. A pre-filled message will open so you can confirm the item with us directly."
+      },
+      {
+        "question": "How do I make payment?",
+        "answer": "Payment instructions are shared privately through WhatsApp once your order details are confirmed. There is no online checkout or payment gateway on this website."
+      },
+      {
+        "question": "What sizes are available?",
+        "answer": "Most pieces are available in S to XXL. Please refer to our Size Guide for chest, shoulder, sleeve and length measurements, or message us on WhatsApp for fit advice."
+      },
+      {
+        "question": "Can I exchange an item?",
+        "answer": "Exchanges may be arranged depending on availability and condition. Contact us on WhatsApp within 7 days of receiving your order and we will guide you through the process."
+      },
+      {
+        "question": "How long does delivery take?",
+        "answer": "Delivery timelines vary by location and stock availability. Once your order is confirmed on WhatsApp, we will share the estimated shipping time and tracking details."
+      },
+      {
+        "question": "How can I check product availability?",
+        "answer": "Availability is shown on each product listing. For the latest stock updates, send us a WhatsApp message with the product name, colour and size you need."
+      }
+    ]'::jsonb
+    where id = 1;
+  end if;
+end $$;
+
 insert into public.products (
   id, name, category, description, price, main_image, images, sizes, colours,
   material, care_instructions, featured, new_arrival, available, sort_order
@@ -191,3 +262,46 @@ on conflict (id) do update set
   sort_order = excluded.sort_order;
 
 delete from public.lookbook_images;
+
+do $$
+begin
+  if to_regclass('public.reviews') is null then
+    return;
+  end if;
+
+  insert into public.reviews (id, name, rating, body, status, created_at)
+  values
+    (
+      'a1111111-1111-4111-8111-111111111101',
+      'Aisha Rahman',
+      5,
+      'The linen overshirt feels incredible and looks even better in person. Ordering through WhatsApp was simple and personal.',
+      'approved',
+      '2026-01-04T00:00:00Z'
+    ),
+    (
+      'a1111111-1111-4111-8111-111111111102',
+      'Daniel Tan',
+      5,
+      'Clean cuts, premium fabrics and a fit that works for everyday wear. Marvolo has become my go-to for smart-casual pieces.',
+      'approved',
+      '2026-01-03T00:00:00Z'
+    ),
+    (
+      'a1111111-1111-4111-8111-111111111103',
+      'Sofia Lim',
+      5,
+      'I love how understated everything feels. The quality is obvious and the team helped me choose the right size over WhatsApp.',
+      'approved',
+      '2026-01-02T00:00:00Z'
+    ),
+    (
+      'a1111111-1111-4111-8111-111111111104',
+      'Hafiz Omar',
+      4,
+      'Beautiful trousers and fast replies. The whole experience felt more thoughtful than a typical online shop.',
+      'approved',
+      '2026-01-01T00:00:00Z'
+    )
+  on conflict (id) do nothing;
+end $$;

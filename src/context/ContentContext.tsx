@@ -22,9 +22,11 @@ import {
 } from '../services/contentService'
 import type {
   CatalogueCategory,
+  FaqItem,
   HeroContent,
   LookbookImage,
   SiteContent,
+  SizeGuideChart,
   WhatsAppContact,
   WhatsAppSettings,
 } from '../types/content'
@@ -43,6 +45,8 @@ type ContentContextValue = {
   aboutImage: string
   lookbookImages: LookbookImage[]
   whatsapp: WhatsAppSettings
+  sizeGuides: SizeGuideChart[]
+  faqs: FaqItem[]
   activeWhatsApp: WhatsAppContact
   refresh: () => Promise<void>
   upsertProduct: (product: Product) => Promise<void>
@@ -55,6 +59,8 @@ type ContentContextValue = {
     aboutImage?: string
     lookbookImages?: LookbookImage[]
     whatsapp?: WhatsAppSettings
+    sizeGuides?: SizeGuideChart[]
+    faqs?: FaqItem[]
   }) => Promise<void>
   resetContent: () => Promise<void>
   clearError: () => void
@@ -208,27 +214,41 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     aboutImage?: string
     lookbookImages?: LookbookImage[]
     whatsapp?: WhatsAppSettings
+    sizeGuides?: SizeGuideChart[]
+    faqs?: FaqItem[]
   }) => {
     await runMutation(async () => {
       const nextHero = input.hero ?? content.hero
       const nextAbout = input.aboutImage ?? content.aboutImage
       const nextWhatsApp = input.whatsapp ?? content.whatsapp
+      const nextSizeGuides = input.sizeGuides ?? content.sizeGuides
+      const nextFaqs = input.faqs ?? content.faqs
       const shouldUpdateSettings =
         input.hero !== undefined ||
         input.aboutImage !== undefined ||
-        input.whatsapp !== undefined
+        input.whatsapp !== undefined ||
+        input.sizeGuides !== undefined ||
+        input.faqs !== undefined
 
       if (shouldUpdateSettings) {
         await updateSiteSettingsRemote({
           hero: nextHero,
           aboutImage: nextAbout,
           whatsapp: nextWhatsApp,
+          ...(input.sizeGuides !== undefined
+            ? { sizeGuides: nextSizeGuides }
+            : {}),
+          ...(input.faqs !== undefined ? { faqs: nextFaqs } : {}),
         })
         setContent((prev) => ({
           ...prev,
           hero: nextHero,
           aboutImage: nextAbout,
           whatsapp: nextWhatsApp,
+          ...(input.sizeGuides !== undefined
+            ? { sizeGuides: nextSizeGuides }
+            : {}),
+          ...(input.faqs !== undefined ? { faqs: nextFaqs } : {}),
         }))
       }
 
@@ -272,6 +292,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         aboutImage: content.aboutImage,
         lookbookImages: content.lookbookImages,
         whatsapp: content.whatsapp,
+        sizeGuides: content.sizeGuides,
+        faqs: content.faqs,
         activeWhatsApp: getRotatingWhatsAppContact(content.whatsapp),
         refresh,
         upsertProduct,

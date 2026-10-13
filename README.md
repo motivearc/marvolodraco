@@ -52,10 +52,13 @@ You can:
 - Add, edit, and delete products (including gallery images)
 - Change hero, about, and lookbook images
 - Manage up to 3 WhatsApp numbers and pick which one is active for order links
+- Edit size guides (multiple charts for different garment types)
+- Edit FAQ questions and answers
 - Upload images to the `media` storage bucket
+- Approve or unpublish customer reviews
 - Reset everything to the seeded defaults
 
-If the project already has a database, also run `supabase/migrate-whatsapp.sql` (or re-run `supabase/fix-site-content-save.sql`) so WhatsApp columns exist.
+If the project already has a database, also run `supabase/migrate-whatsapp.sql` (or re-run `supabase/fix-site-content-save.sql`) so WhatsApp columns exist. Run `supabase/migrate-reviews.sql` so visitors can submit reviews for admin approval. Run `supabase/migrate-size-guides.sql` to store editable size charts. Run `supabase/migrate-faqs.sql` for editable FAQs.
 
 ## Customise brand details
 

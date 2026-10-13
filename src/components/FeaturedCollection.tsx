@@ -12,7 +12,10 @@ export function FeaturedCollection({
   onViewDetails,
 }: FeaturedCollectionProps) {
   return (
-    <section className="bg-cream px-5 py-20 md:px-8 md:py-28 lg:px-10">
+    <section
+      id="featured"
+      className="scroll-mt-28 bg-cream px-5 py-20 md:px-8 md:py-28 lg:px-10"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Featured"

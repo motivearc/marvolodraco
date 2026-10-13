@@ -51,6 +51,8 @@ export type SiteSettingsRow = {
   whatsapp_contacts?: WhatsAppContactRow[]
   whatsapp_active_index?: number
   product_categories?: { id: string; label: string }[]
+  size_guides?: unknown
+  faqs?: unknown
   updated_at?: string
 }
 
@@ -61,6 +63,17 @@ export type LookbookImageRow = {
   span: 'tall' | 'wide' | 'normal'
   sort_order: number
   created_at?: string
+}
+
+export type ReviewStatus = 'pending' | 'approved'
+
+export type ReviewRow = {
+  id: string
+  name: string
+  rating: number
+  body: string
+  status: ReviewStatus
+  created_at: string
 }
 
 export type Database = {
@@ -88,6 +101,19 @@ export type Database = {
           created_at?: string
         }
         Update: Partial<LookbookImageRow>
+        Relationships: []
+      }
+      reviews: {
+        Row: ReviewRow
+        Insert: {
+          id?: string
+          name: string
+          rating: number
+          body: string
+          status?: ReviewStatus
+          created_at?: string
+        }
+        Update: Partial<Omit<ReviewRow, 'id'>>
         Relationships: []
       }
     }

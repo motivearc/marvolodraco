@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { X } from 'lucide-react'
 import { useContent } from '../context/ContentContext'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import type { Product } from '../types/product'
-import { sizeGuide } from '../data/content'
+import { findSizeGuideForCategory } from '../utils/sizeGuides'
 import { buildWhatsAppOrderUrl, formatPrice } from '../utils/whatsapp'
 
 type ProductModalProps = {
@@ -12,12 +12,19 @@ type ProductModalProps = {
 }
 
 export function ProductModal({ product, onClose }: ProductModalProps) {
-  const { activeWhatsApp } = useContent()
+  const { activeWhatsApp, sizeGuides } = useContent()
   const online = useOnlineStatus()
   const [activeImage, setActiveImage] = useState(0)
   const [selectedColour, setSelectedColour] = useState('')
   const [selectedSize, setSelectedSize] = useState('')
   const [showSizeGuide, setShowSizeGuide] = useState(false)
+  const sizeGuide = useMemo(
+    () =>
+      product
+        ? findSizeGuideForCategory(sizeGuides, product.category)
+        : null,
+    [product, sizeGuides],
+  )
 
   useEffect(() => {
     if (!product) return
@@ -188,33 +195,46 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
               </div>
 
               {showSizeGuide ? (
-                <div className="overflow-x-auto border border-line">
-                  <table className="min-w-full text-left text-xs">
-                    <thead className="bg-mist text-stone">
-                      <tr>
-                        <th className="px-3 py-2 font-medium">Size</th>
-                        <th className="px-3 py-2 font-medium">Chest</th>
-                        <th className="px-3 py-2 font-medium">Shoulder</th>
-                        <th className="px-3 py-2 font-medium">Sleeve</th>
-                        <th className="px-3 py-2 font-medium">Length</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sizeGuide.map((row) => (
-                        <tr key={row.size} className="border-t border-line">
-                          <td className="px-3 py-2 font-medium">{row.size}</td>
-                          <td className="px-3 py-2">{row.chest}</td>
-                          <td className="px-3 py-2">{row.shoulder}</td>
-                          <td className="px-3 py-2">{row.sleeve}</td>
-                          <td className="px-3 py-2">{row.length}</td>
+                sizeGuide ? (
+                  <div className="overflow-x-auto border border-line">
+                    {sizeGuides.length > 1 ? (
+                      <p className="border-b border-line px-3 py-2 text-[11px] tracking-wide text-stone uppercase">
+                        {sizeGuide.label}
+                      </p>
+                    ) : null}
+                    <table className="min-w-full text-left text-xs">
+                      <thead className="bg-mist text-stone">
+                        <tr>
+                          <th className="px-3 py-2 font-medium">Size</th>
+                          {sizeGuide.columns.map((column) => (
+                            <th key={column.id} className="px-3 py-2 font-medium">
+                              {column.label}
+                            </th>
+                          ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <p className="border-t border-line px-3 py-2 text-[11px] text-stone">
-                    Measurements in cm. Guide refers to garment measurements.
+                      </thead>
+                      <tbody>
+                        {sizeGuide.rows.map((row) => (
+                          <tr key={row.size} className="border-t border-line">
+                            <td className="px-3 py-2 font-medium">{row.size}</td>
+                            {sizeGuide.columns.map((column) => (
+                              <td key={column.id} className="px-3 py-2">
+                                {row.values[column.id] || '—'}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <p className="border-t border-line px-3 py-2 text-[11px] text-stone">
+                      Measurements refer to the garment. Chart: {sizeGuide.label}.
+                    </p>
+                  </div>
+                ) : (
+                  <p className="border border-line px-3 py-2 text-xs text-stone">
+                    No size chart is available for this piece yet.
                   </p>
-                </div>
+                )
               ) : null}
 
               <div className="space-y-2 border-t border-line pt-5 text-sm text-ink-soft">

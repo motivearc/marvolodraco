@@ -2,18 +2,25 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowLeft,
+  CircleHelp,
   ImageIcon,
   LogOut,
   Package,
   RotateCcw,
+  Ruler,
+  Star,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useContent } from '../context/ContentContext'
+import { AdminFaqs } from '../components/admin/AdminFaqs'
 import { AdminImages } from '../components/admin/AdminImages'
 import { AdminProducts } from '../components/admin/AdminProducts'
+import { AdminReviews } from '../components/admin/AdminReviews'
+import { AdminSizeGuide } from '../components/admin/AdminSizeGuide'
 import { brand } from '../data/brand'
+import { fetchAllReviews } from '../services/reviewService'
 
-type AdminTab = 'products' | 'images'
+type AdminTab = 'products' | 'images' | 'size-guide' | 'faqs' | 'reviews'
 
 export function AdminPage() {
   const { configured, loading: authLoading, user, signIn, signOut } = useAuth()
@@ -30,6 +37,8 @@ export function AdminPage() {
   const [loginError, setLoginError] = useState<string | null>(null)
   const [signingIn, setSigningIn] = useState(false)
   const [tab, setTab] = useState<AdminTab>('products')
+  const [pendingReviews, setPendingReviews] = useState(0)
+  const [reviewTick, setReviewTick] = useState(0)
 
   useEffect(() => {
     document.title = `Admin · ${brand.name}`
@@ -37,6 +46,22 @@ export function AdminPage() {
       document.title = `${brand.name} | ${brand.tagline}`
     }
   }, [])
+
+  useEffect(() => {
+    if (!user) return
+    let mounted = true
+    void fetchAllReviews()
+      .then((rows) => {
+        if (!mounted) return
+        setPendingReviews(rows.filter((review) => review.status === 'pending').length)
+      })
+      .catch(() => {
+        if (mounted) setPendingReviews(0)
+      })
+    return () => {
+      mounted = false
+    }
+  }, [user, reviewTick])
 
   async function handleLogin(event: FormEvent) {
     event.preventDefault()
@@ -235,6 +260,9 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               [
                 ['products', 'Products', Package],
                 ['images', 'Site', ImageIcon],
+                ['size-guide', 'Size guide', Ruler],
+                ['faqs', 'FAQs', CircleHelp],
+                ['reviews', 'Reviews', Star],
               ] as const
             ).map(([id, label, Icon]) => (
               <button
@@ -248,13 +276,32 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
                 }`}
               >
                 <Icon className="size-4" />
-                {label}
+                <span className="flex-1">{label}</span>
+                {id === 'reviews' && pendingReviews > 0 ? (
+                  <span
+                    className={`min-w-5 px-1.5 text-center text-xs ${
+                      tab === id ? 'text-cream' : 'text-ink'
+                    }`}
+                  >
+                    {pendingReviews}
+                  </span>
+                ) : null}
               </button>
             ))}
           </aside>
 
           <main className="min-w-0">
-            {tab === 'products' ? <AdminProducts /> : <AdminImages />}
+            {tab === 'products' ? (
+              <AdminProducts />
+            ) : tab === 'images' ? (
+              <AdminImages />
+            ) : tab === 'size-guide' ? (
+              <AdminSizeGuide />
+            ) : tab === 'faqs' ? (
+              <AdminFaqs />
+            ) : (
+              <AdminReviews onChange={() => setReviewTick((value) => value + 1)} />
+            )}
           </main>
         </div>
       )}
