@@ -11,9 +11,13 @@ import { useLocation } from 'react-router-dom'
 import { pwaConfig } from '../config/pwa'
 import { getInstallPlatform, type InstallPlatform } from '../utils/deviceDetection'
 import {
+  hardNavigateForAdminInstall,
+  isAdminManifestReady,
   isAdminRoute,
+  readAdminInstallPending,
   readInstallDismissed,
   rememberInstallDismissed,
+  setAdminInstallPending,
 } from '../utils/pwa'
 import { useIsStandalone } from './useIsStandalone'
 
@@ -45,6 +49,7 @@ export function usePWAInstallController(): PWAInstallContextValue {
   const standalone = useIsStandalone()
   const { pathname } = useLocation()
   const admin = isAdminRoute(pathname)
+  const routeKey = useRef(pathname)
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null)
   const [canNativeInstall, setCanNativeInstall] = useState(false)
   const [dismissed, setDismissed] = useState(readInstallDismissed)
@@ -63,6 +68,7 @@ export function usePWAInstallController(): PWAInstallContextValue {
       deferredPrompt.current = null
       setCanNativeInstall(false)
       setInstructionsOpen(false)
+      setAdminInstallPending(false)
       setInstalledConfirmation(true)
     }
 
@@ -74,11 +80,25 @@ export function usePWAInstallController(): PWAInstallContextValue {
     }
   }, [])
 
+  // Stale beforeinstallprompt events are tied to the previous manifest.
+  useEffect(() => {
+    if (routeKey.current === pathname) return
+    routeKey.current = pathname
+    deferredPrompt.current = null
+    setCanNativeInstall(false)
+  }, [pathname])
+
   useEffect(() => {
     if (!installedConfirmation) return
     const timer = window.setTimeout(() => setInstalledConfirmation(false), 5000)
     return () => window.clearTimeout(timer)
   }, [installedConfirmation])
+
+  useEffect(() => {
+    if (!admin || !readAdminInstallPending()) return
+    setAdminInstallPending(false)
+    setInstructionsOpen(true)
+  }, [admin])
 
   const installAllowed = admin
     ? pwaConfig.enableAdminInstall
@@ -102,6 +122,11 @@ export function usePWAInstallController(): PWAInstallContextValue {
     [],
   )
   const requestInstall = useCallback(async () => {
+    if (admin && !isAdminManifestReady()) {
+      hardNavigateForAdminInstall()
+      return
+    }
+
     const promptEvent = deferredPrompt.current
     if (!promptEvent) {
       setInstructionsOpen(true)
@@ -116,7 +141,7 @@ export function usePWAInstallController(): PWAInstallContextValue {
     } catch {
       setInstructionsOpen(true)
     }
-  }, [])
+  }, [admin])
 
   return useMemo(
     () => ({

@@ -23,9 +23,9 @@ const customerBenefits = [
 ]
 
 const adminBenefits = [
-  'Faster access to the dashboard from your Home Screen',
-  'A Home Screen icon',
-  'The same admin tools, opened with less browser interface',
+  'Home Screen shortcut opens Admin, not the storefront',
+  'Faster access to the dashboard',
+  'The same admin tools, with less browser interface',
 ]
 
 export function PWAInstallInstructions() {
@@ -100,11 +100,12 @@ export function PWAInstallInstructions() {
             ))}
           </ul>
 
-          <div className="mt-6">{renderSteps(platform)}</div>
+          <div className="mt-6">{renderSteps(platform, admin)}</div>
 
           <p className="mt-6 border-t border-line pt-4 text-sm leading-relaxed text-ink-soft">
-            After installation, open the app from your Home Screen to activate
-            the app-style experience.
+            {admin
+              ? 'Remove any older Marvolo Home Screen icon first, then install again from this Admin page so the shortcut opens Admin.'
+              : 'After installation, open the app from your Home Screen to activate the app-style experience.'}
           </p>
         </div>
       </div>
@@ -112,12 +113,22 @@ export function PWAInstallInstructions() {
   )
 }
 
-function renderSteps(platform: ReturnType<typeof usePWAInstall>['platform']) {
+function renderSteps(
+  platform: ReturnType<typeof usePWAInstall>['platform'],
+  admin: boolean,
+) {
   if (platform === 'ios') {
     const safari = isIosSafari()
     return (
       <InstructionList title="How to Install on iPhone">
-        <Step icon={Share} label="Open this website using Safari." />
+        <Step
+          icon={Share}
+          label={
+            admin
+              ? 'Stay on this Admin page in Safari (address should end with /admin).'
+              : 'Open this website using Safari.'
+          }
+        />
         {!safari ? (
           <Step
             icon={Smartphone}
