@@ -6,7 +6,7 @@ import { brand } from '../data/brand'
  *
  * Set ENABLE_ADMIN_PWA_INSTALL to true to show a small install option on /admin.
  */
-export const ENABLE_ADMIN_PWA_INSTALL = false
+export const ENABLE_ADMIN_PWA_INSTALL = true
 
 export const pwaConfig = {
   enableCustomerInstall: true,
