@@ -145,7 +145,7 @@ export function Footer() {
           rel="noopener noreferrer"
           className="transition-colors hover:text-cream"
         >
-          Motive Arc
+          MotiveArc
           <sup className="ml-0.5 text-[9px]">™</sup>
         </a>
       </div>
