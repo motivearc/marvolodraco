@@ -55,15 +55,23 @@ export function Hero() {
 
       <div className="relative mx-auto flex min-h-dynamic max-w-7xl items-end px-5 pt-[calc(7rem+env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))] md:items-center md:px-8 md:pb-24 lg:px-10">
         <div className="max-w-xl text-cream">
-          <p className="animate-fade-up mb-4 text-xs font-medium tracking-[0.28em] text-sand uppercase">
-            {hero.eyebrow}
-          </p>
-          <h1 className="animate-fade-up delay-100 font-display text-5xl leading-[1.05] font-medium tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            {hero.headline}
-          </h1>
-          <p className="animate-fade-up delay-200 mt-5 max-w-md text-base leading-relaxed text-cream/85 md:text-lg">
-            {hero.description}
-          </p>
+          {hero.eyebrow ? (
+            <p className="animate-fade-up mb-4 text-xs font-medium tracking-[0.28em] text-sand uppercase">
+              {hero.eyebrow}
+            </p>
+          ) : null}
+          {hero.headline ? (
+            <h1 className="animate-fade-up delay-100 font-display text-5xl leading-[1.05] font-medium tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              {hero.headline}
+            </h1>
+          ) : (
+            <h1 className="sr-only">{hero.eyebrow || 'Marvolo'}</h1>
+          )}
+          {hero.description ? (
+            <p className="animate-fade-up delay-200 mt-5 max-w-md text-base leading-relaxed text-cream/85 md:text-lg">
+              {hero.description}
+            </p>
+          ) : null}
           <div className="animate-fade-up delay-300 mt-8 flex flex-wrap gap-3">
             <a
               href="#collection"

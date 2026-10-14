@@ -285,8 +285,9 @@ function mapHero(settings: SiteSettingsRow | null): HeroContent {
 
   return {
     eyebrow: settings.hero_eyebrow || defaultHero.eyebrow,
-    headline: settings.hero_headline || defaultHero.headline,
-    description: settings.hero_description || defaultHero.description,
+    // Empty string is intentional — admin can clear headline / supporting text.
+    headline: settings.hero_headline ?? defaultHero.headline,
+    description: settings.hero_description ?? defaultHero.description,
     primaryCta: settings.hero_primary_cta || defaultHero.primaryCta,
     secondaryCta: settings.hero_secondary_cta || defaultHero.secondaryCta,
     images: normalizeHeroImages(settings.hero_images, settings.hero_image),

@@ -259,7 +259,7 @@ export function AdminImages() {
             onChange={(event) =>
               updateHeroField('headline', event.target.value)
             }
-            placeholder="Timeless Style. Made for Every Occasion."
+            placeholder="Optional — leave blank to hide"
             className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
@@ -274,6 +274,7 @@ export function AdminImages() {
             onChange={(event) =>
               updateHeroField('description', event.target.value)
             }
+            placeholder="Optional — leave blank to hide"
             className="w-full border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-ink"
           />
         </label>
