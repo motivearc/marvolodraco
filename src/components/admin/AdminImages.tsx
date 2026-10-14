@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
+import {
+  ChevronDown,
+  ChevronUp,
+  GripVertical,
+  Plus,
+  Trash2,
+} from 'lucide-react'
 import { useContent } from '../../context/ContentContext'
 import type {
   HeroContent,
@@ -8,8 +14,10 @@ import type {
   WhatsAppSettings,
 } from '../../types/content'
 import { LOOKBOOK_SPANS, WHATSAPP_SLOT_COUNT } from '../../types/content'
+import { emptyLookbookImage, lookbookObjectPosition } from '../../utils/lookbook'
 import { normalizeWhatsAppNumber } from '../../utils/whatsapp'
 import { ImageField } from './ImageField'
+import { LookbookFrameField } from './LookbookFrameField'
 
 function emptySlots(contacts: WhatsAppContact[]): WhatsAppContact[] {
   return Array.from({ length: WHATSAPP_SLOT_COUNT }, (_, index) => {
@@ -42,16 +50,42 @@ export function AdminImages() {
     activeIndex: whatsapp.activeIndex,
   })
   const [message, setMessage] = useState<string | null>(null)
+  const [dragLookbookIndex, setDragLookbookIndex] = useState<number | null>(null)
+  const [overLookbookIndex, setOverLookbookIndex] = useState<number | null>(null)
 
   useEffect(() => {
     setHeroDraft(hero)
     setAboutDraft(aboutImage)
-    setLookbookDraft(lookbookImages)
+    setLookbookDraft(
+      lookbookImages.map((image) => ({
+        ...image,
+        focusX: image.focusX ?? 50,
+        focusY: image.focusY ?? 50,
+      })),
+    )
     setWhatsappDraft({
       contacts: emptySlots(whatsapp.contacts),
       activeIndex: whatsapp.activeIndex,
     })
   }, [hero, aboutImage, lookbookImages, whatsapp])
+
+  function moveLookbook(fromIndex: number, toIndex: number) {
+    if (
+      fromIndex === toIndex ||
+      fromIndex < 0 ||
+      toIndex < 0 ||
+      fromIndex >= lookbookDraft.length ||
+      toIndex >= lookbookDraft.length
+    ) {
+      return
+    }
+    setLookbookDraft((prev) => {
+      const next = [...prev]
+      const [moved] = next.splice(fromIndex, 1)
+      next.splice(toIndex, 0, moved)
+      return next
+    })
+  }
 
   function updateHeroField<K extends keyof HeroContent>(
     key: K,
@@ -394,20 +428,19 @@ export function AdminImages() {
 
       <section className="space-y-4 border border-line p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="font-display text-xl font-medium text-ink">
-            Lookbook
-          </h3>
+          <div>
+            <h3 className="font-display text-xl font-medium text-ink">
+              Lookbook
+            </h3>
+            <p className="mt-1 text-sm text-ink-soft/80">
+              Drag tiles in the preview (or use the arrows) to set the order on
+              the homepage. Save when you are done.
+            </p>
+          </div>
           <button
             type="button"
             onClick={() =>
-              setLookbookDraft((prev) => [
-                ...prev,
-                {
-                  src: '',
-                  alt: 'Lookbook image',
-                  span: 'normal',
-                },
-              ])
+              setLookbookDraft((prev) => [...prev, emptyLookbookImage()])
             }
             className="inline-flex items-center gap-2 border border-ink px-3 py-2 text-xs font-medium tracking-[0.12em] text-ink uppercase transition hover:bg-ink hover:text-cream"
           >
@@ -416,19 +449,159 @@ export function AdminImages() {
           </button>
         </div>
 
+        {lookbookDraft.some((image) => image.src.trim()) ? (
+          <div className="space-y-3 border border-line bg-mist p-4">
+            <p className="text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">
+              Layout preview
+            </p>
+            <div className="grid auto-rows-[100px] grid-cols-2 gap-2 md:auto-rows-[120px] md:grid-cols-4 md:gap-3">
+              {lookbookDraft.map((image, index) => {
+                const src = image.src.trim()
+                if (!src) return null
+                return (
+                  <div
+                    key={`preview-${image.id ?? index}`}
+                    draggable
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = 'move'
+                      event.dataTransfer.setData('text/plain', String(index))
+                      setDragLookbookIndex(index)
+                    }}
+                    onDragEnd={() => {
+                      setDragLookbookIndex(null)
+                      setOverLookbookIndex(null)
+                    }}
+                    onDragOver={(event) => {
+                      if (dragLookbookIndex === null) return
+                      event.preventDefault()
+                      setOverLookbookIndex(index)
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault()
+                      const from = Number(
+                        event.dataTransfer.getData('text/plain') ||
+                          dragLookbookIndex,
+                      )
+                      moveLookbook(from, index)
+                      setDragLookbookIndex(null)
+                      setOverLookbookIndex(null)
+                    }}
+                    className={`relative cursor-grab overflow-hidden bg-cream-dark active:cursor-grabbing ${
+                      image.span === 'tall'
+                        ? 'row-span-2'
+                        : image.span === 'wide'
+                          ? 'col-span-2'
+                          : ''
+                    } ${index === 0 ? 'col-span-2 md:col-span-1' : ''} ${
+                      overLookbookIndex === index &&
+                      dragLookbookIndex !== index
+                        ? 'ring-2 ring-ink'
+                        : ''
+                    } ${dragLookbookIndex === index ? 'opacity-50' : ''}`}
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      style={{ objectPosition: lookbookObjectPosition(image) }}
+                      className="h-full w-full object-cover"
+                      draggable={false}
+                    />
+                    <span className="absolute top-1.5 left-1.5 bg-ink/80 px-1.5 py-0.5 text-[10px] font-medium tracking-wider text-cream uppercase">
+                      {index + 1}
+                      {image.span !== 'normal' ? ` · ${image.span}` : ''}
+                    </span>
+                    <span className="absolute right-1.5 bottom-1.5 text-cream/90 drop-shadow">
+                      <GripVertical className="size-4" />
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ) : null}
+
         <div className="space-y-4">
           {lookbookDraft.map((image, index) => (
             <div
               key={image.id ?? index}
-              className="relative space-y-3 border border-line p-4"
+              onDragOver={(event) => {
+                if (dragLookbookIndex === null) return
+                event.preventDefault()
+                setOverLookbookIndex(index)
+              }}
+              onDrop={(event) => {
+                event.preventDefault()
+                const from = Number(
+                  event.dataTransfer.getData('text/plain') ||
+                    dragLookbookIndex,
+                )
+                moveLookbook(from, index)
+                setDragLookbookIndex(null)
+                setOverLookbookIndex(null)
+              }}
+              className={`relative space-y-3 border border-line p-4 ${
+                overLookbookIndex === index && dragLookbookIndex !== index
+                  ? 'bg-mist'
+                  : ''
+              } ${dragLookbookIndex === index ? 'opacity-50' : ''}`}
             >
+              <div className="flex flex-wrap items-center justify-between gap-2 pr-10">
+                <div className="flex items-center gap-2">
+                  <span
+                    draggable
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = 'move'
+                      event.dataTransfer.setData('text/plain', String(index))
+                      setDragLookbookIndex(index)
+                    }}
+                    onDragEnd={() => {
+                      setDragLookbookIndex(null)
+                      setOverLookbookIndex(null)
+                    }}
+                    className="cursor-grab p-1 text-stone active:cursor-grabbing"
+                    aria-label={`Drag lookbook ${index + 1}`}
+                  >
+                    <GripVertical className="size-4" />
+                  </span>
+                  <p className="text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">
+                    Lookbook {index + 1}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    disabled={index === 0}
+                    onClick={() => moveLookbook(index, index - 1)}
+                    className="p-1.5 text-stone transition hover:text-ink disabled:opacity-30"
+                    aria-label={`Move lookbook ${index + 1} up`}
+                  >
+                    <ChevronUp className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={index === lookbookDraft.length - 1}
+                    onClick={() => moveLookbook(index, index + 1)}
+                    className="p-1.5 text-stone transition hover:text-ink disabled:opacity-30"
+                    aria-label={`Move lookbook ${index + 1} down`}
+                  >
+                    <ChevronDown className="size-4" />
+                  </button>
+                </div>
+              </div>
               <ImageField
-                label={`Lookbook ${index + 1}`}
+                label="Image"
                 value={image.src}
                 onChange={(value) => {
                   setLookbookDraft((prev) =>
                     prev.map((item, i) =>
-                      i === index ? { ...item, src: value } : item,
+                      i === index
+                        ? {
+                            ...item,
+                            src: value,
+                            focusX: item.focusX ?? 50,
+                            focusY: item.focusY ?? 50,
+                          }
+                        : item,
                     ),
                   )
                 }}
@@ -475,6 +648,20 @@ export function AdminImages() {
                   </select>
                 </label>
               </div>
+              <LookbookFrameField
+                image={{
+                  ...image,
+                  focusX: image.focusX ?? 50,
+                  focusY: image.focusY ?? 50,
+                }}
+                onChange={({ focusX, focusY }) => {
+                  setLookbookDraft((prev) =>
+                    prev.map((item, i) =>
+                      i === index ? { ...item, focusX, focusY } : item,
+                    ),
+                  )
+                }}
+              />
               <button
                 type="button"
                 onClick={() =>

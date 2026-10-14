@@ -61,6 +61,8 @@ export type LookbookImageRow = {
   src: string
   alt: string
   span: 'tall' | 'wide' | 'normal'
+  focus_x?: number | null
+  focus_y?: number | null
   sort_order: number
   created_at?: string
 }

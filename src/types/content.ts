@@ -5,6 +5,10 @@ export type LookbookImage = {
   src: string
   alt: string
   span: 'tall' | 'wide' | 'normal'
+  /** Horizontal focal point for object-position (0–100). */
+  focusX: number
+  /** Vertical focal point for object-position (0–100). */
+  focusY: number
 }
 
 export type HeroContent = {

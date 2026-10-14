@@ -335,6 +335,8 @@ export async function fetchSiteContent(): Promise<SiteContent> {
       src: row.src,
       alt: row.alt,
       span: row.span,
+      focusX: Number.isFinite(Number(row.focus_x)) ? Number(row.focus_x) : 50,
+      focusY: Number.isFinite(Number(row.focus_y)) ? Number(row.focus_y) : 50,
     }),
   )
 
@@ -555,6 +557,9 @@ function formatSaveError(message: string): string {
   if (lower.includes('faqs')) {
     return 'FAQ column is missing. Run supabase/migrate-faqs.sql in the Supabase SQL Editor, then try again.'
   }
+  if (lower.includes('focus_x') || lower.includes('focus_y')) {
+    return 'Lookbook focus columns are missing. Run supabase/migrate-lookbook-focus.sql in the Supabase SQL Editor, then try again.'
+  }
   return message
 }
 
@@ -592,6 +597,8 @@ export async function replaceLookbookImages(
     src: image.src,
     alt: image.alt,
     span: image.span,
+    focus_x: Number.isFinite(image.focusX) ? image.focusX : 50,
+    focus_y: Number.isFinite(image.focusY) ? image.focusY : 50,
     sort_order: index + 1,
   }))
 
@@ -608,6 +615,8 @@ export async function replaceLookbookImages(
     src: row.src,
     alt: row.alt,
     span: row.span,
+    focusX: Number.isFinite(Number(row.focus_x)) ? Number(row.focus_x) : 50,
+    focusY: Number.isFinite(Number(row.focus_y)) ? Number(row.focus_y) : 50,
   }))
 }
 

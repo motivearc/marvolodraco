@@ -102,6 +102,8 @@ create table if not exists public.lookbook_images (
   src text not null,
   alt text not null default '',
   span text not null default 'normal' check (span in ('normal', 'tall', 'wide')),
+  focus_x numeric not null default 50 check (focus_x >= 0 and focus_x <= 100),
+  focus_y numeric not null default 50 check (focus_y >= 0 and focus_y <= 100),
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );

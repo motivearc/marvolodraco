@@ -1,5 +1,6 @@
 import { brand } from '../data/brand'
 import { useContent } from '../context/ContentContext'
+import { lookbookObjectPosition } from '../utils/lookbook'
 import { SectionHeading } from './SectionHeading'
 
 export function Lookbook() {
@@ -44,6 +45,7 @@ export function Lookbook() {
                 alt={image.alt}
                 loading="lazy"
                 decoding="async"
+                style={{ objectPosition: lookbookObjectPosition(image) }}
                 className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
               />
             </div>
