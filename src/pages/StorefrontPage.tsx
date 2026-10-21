@@ -35,7 +35,7 @@ export function StorefrontPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
   const featuredProducts = useMemo(
-    () => products.filter((product) => product.featured).slice(0, 6),
+    () => products.filter((product) => product.featured),
     [products],
   )
 

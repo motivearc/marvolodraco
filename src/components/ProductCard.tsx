@@ -4,9 +4,14 @@ import { formatPrice } from '../utils/whatsapp'
 type ProductCardProps = {
   product: Product
   onViewDetails: (product: Product) => void
+  stackActions?: boolean
 }
 
-export function ProductCard({ product, onViewDetails }: ProductCardProps) {
+export function ProductCard({
+  product,
+  onViewDetails,
+  stackActions = false,
+}: ProductCardProps) {
   return (
     <article className="group flex h-full flex-col">
       <button
@@ -65,7 +70,9 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
           Sizes: {product.sizes.join(' · ')}
         </p>
 
-        <div className="mt-auto flex flex-col gap-2 sm:flex-row">
+        <div
+          className={`mt-auto flex flex-col gap-2 ${stackActions ? '' : 'sm:flex-row'}`}
+        >
           <button
             type="button"
             onClick={() => onViewDetails(product)}
