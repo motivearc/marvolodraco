@@ -5,19 +5,21 @@
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink: #1c1b1a;
-  --color-ink-soft: #3a3835;
-  --color-cream: #f6f3ee;
-  --color-cream-dark: #ebe6de;
-  --color-sand: #d8d0c4;
-  --color-stone: #8c867c;
-  --color-mist: #f0ece6;
-  --color-line: #ddd6cb;
+  --color-ink: #f6f3ee;
+  --color-ink-soft: #d5cec4;
+  --color-cream: #000000;
+  --color-cream-dark: #161616;
+  --color-sand: #c4bdb3;
+  --color-stone: #a8a29a;
+  --color-mist: #0c0c0c;
+  --color-line: #3f3c38;
 }
 
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  color-scheme: dark;
+  background: #000000;
 }
 
 body {

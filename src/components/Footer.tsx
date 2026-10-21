@@ -24,7 +24,7 @@ export function Footer() {
   return (
     <footer
       id="contact"
-      className="scroll-mt-24 border-t border-line bg-ink px-5 py-16 text-cream md:px-8 md:py-20 lg:px-10"
+      className="scroll-mt-24 border-t border-line bg-black px-5 py-16 text-ink md:px-8 md:py-20 lg:px-10"
     >
       <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-2">
@@ -50,7 +50,7 @@ export function Footer() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="text-sm text-cream/80 transition hover:text-cream"
+                  className="text-sm text-ink/80 transition hover:text-ink"
                 >
                   {link.label}
                 </a>
@@ -61,7 +61,7 @@ export function Footer() {
                 <button
                   type="button"
                   onClick={() => void requestInstall()}
-                  className="text-left text-sm text-cream/80 transition hover:text-cream"
+                  className="text-left text-sm text-ink/80 transition hover:text-ink"
                 >
                   Install App
                 </button>
@@ -74,7 +74,7 @@ export function Footer() {
           <h3 className="mb-4 text-xs font-medium tracking-[0.18em] text-sand uppercase">
             Contact
           </h3>
-          <ul className="space-y-2.5 text-sm text-cream/80">
+          <ul className="space-y-2.5 text-sm text-ink/80">
             {(filledContacts.length
               ? filledContacts
               : [activeWhatsApp]
@@ -84,7 +84,7 @@ export function Footer() {
                   href={buildWhatsAppGeneralUrl(contact.number)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition hover:text-cream"
+                  className="transition hover:text-ink"
                 >
                   WhatsApp
                   {filledContacts.length > 1 ? ` · ${contact.label}` : ''}:{' '}
@@ -97,7 +97,7 @@ export function Footer() {
                 href={brand.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition hover:text-cream"
+                className="transition hover:text-ink"
               >
                 Instagram: {brand.instagramHandle}
               </a>
@@ -105,7 +105,7 @@ export function Footer() {
             <li>
               <a
                 href={`mailto:${brand.email}`}
-                className="transition hover:text-cream"
+                className="transition hover:text-ink"
               >
                 {brand.email}
               </a>
@@ -115,14 +115,14 @@ export function Footer() {
           <h3 className="mt-8 mb-4 text-xs font-medium tracking-[0.18em] text-sand uppercase">
             Policies
           </h3>
-          <ul className="space-y-2.5 text-sm text-cream/80">
+          <ul className="space-y-2.5 text-sm text-ink/80">
             <li>
-              <a href="#faq" className="transition hover:text-cream">
+              <a href="#faq" className="transition hover:text-ink">
                 Delivery Policy
               </a>
             </li>
             <li>
-              <a href="#faq" className="transition hover:text-cream">
+              <a href="#faq" className="transition hover:text-ink">
                 Exchange Policy
               </a>
             </li>
@@ -130,7 +130,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-14 flex max-w-7xl flex-col gap-3 border-t border-cream/15 pt-6 text-xs text-sand/80 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto mt-14 flex max-w-7xl flex-col gap-3 border-t border-ink/15 pt-6 text-xs text-sand/80 sm:flex-row sm:items-center sm:justify-between">
         <p>
           © {new Date().getFullYear()} {brand.name}. All rights reserved.
         </p>
@@ -143,7 +143,7 @@ export function Footer() {
           href="https://motivearc.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="transition-colors hover:text-cream"
+          className="transition-colors hover:text-ink"
         >
           MotiveArc
           <sup className="ml-0.5 text-[9px]">™</sup>

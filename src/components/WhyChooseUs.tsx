@@ -30,13 +30,12 @@ const benefits = [
 
 export function WhyChooseUs() {
   return (
-    <section className="border-y border-line bg-ink px-5 py-20 md:px-8 md:py-28 lg:px-10">
+    <section className="border-y border-line bg-black px-5 py-20 md:px-8 md:py-28 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Why Marvolo"
           title="Designed for everyday confidence"
           description="Four quiet promises behind every piece we make."
-          light
         />
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {benefits.map((benefit) => (
@@ -46,7 +45,7 @@ export function WhyChooseUs() {
                 size={22}
                 strokeWidth={1.5}
               />
-              <h3 className="font-display text-2xl font-medium text-cream">
+              <h3 className="font-display text-2xl font-medium text-ink">
                 {benefit.title}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-sand/90">

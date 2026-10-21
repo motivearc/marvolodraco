@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useHorizontalSwipe } from '../hooks/useHorizontalSwipe'
 import type { Product } from '../types/product'
 import { SectionHeading } from './SectionHeading'
 import { ProductCard } from './ProductCard'
@@ -110,6 +111,14 @@ export function FeaturedCollection({
     scrollToPage(current + direction)
   }
 
+  const swipeOriginRef = useRef(0)
+  const swipe = useHorizontalSwipe((direction) => {
+    const scroller = scrollerRef.current
+    if (!scroller) return
+    if (Math.abs(scroller.scrollLeft - swipeOriginRef.current) > 8) return
+    scrollByPage(direction)
+  })
+
   return (
     <section
       id="featured"
@@ -148,7 +157,15 @@ export function FeaturedCollection({
 
         <div
           ref={scrollerRef}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] motion-reduce:scroll-auto [&::-webkit-scrollbar]:hidden"
+          className="flex cursor-grab snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] motion-reduce:scroll-auto active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+          onPointerDown={(event) => {
+            swipeOriginRef.current = scrollerRef.current?.scrollLeft ?? 0
+            swipe.onPointerDown(event)
+          }}
+          onPointerMove={swipe.onPointerMove}
+          onPointerUp={swipe.onPointerUp}
+          onPointerCancel={swipe.onPointerCancel}
+          onClickCapture={swipe.onClickCapture}
         >
           {products.map((product) => (
             <div

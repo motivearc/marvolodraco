@@ -15,7 +15,7 @@ export function PWAUpdatePrompt() {
   return (
     <section
       aria-label="App update"
-      className={`fixed left-[max(0.75rem,env(safe-area-inset-left))] z-[70] w-[min(22rem,calc(100%-1.5rem))] rounded-2xl border border-line bg-ink p-4 text-cream shadow-[0_10px_30px_rgba(28,27,26,0.2)] ${
+      className={`fixed left-[max(0.75rem,env(safe-area-inset-left))] z-[70] w-[min(22rem,calc(100%-1.5rem))] rounded-2xl border border-line bg-black p-4 text-ink shadow-[0_10px_30px_rgba(0,0,0,0.45)] ${
         customerPwaNav
           ? 'bottom-[calc(6.5rem+env(safe-area-inset-bottom))]'
           : 'bottom-[calc(5.5rem+env(safe-area-inset-bottom))]'
@@ -29,14 +29,14 @@ export function PWAUpdatePrompt() {
             setNeedRefresh(false)
             void updateServiceWorker(true)
           }}
-          className="inline-flex min-h-11 items-center justify-center rounded-sm bg-cream px-3 py-2 text-[11px] font-medium tracking-[0.14em] text-ink uppercase"
+          className="inline-flex min-h-11 items-center justify-center rounded-sm bg-ink px-3 py-2 text-[11px] font-medium tracking-[0.14em] text-cream uppercase"
         >
           Update
         </button>
         <button
           type="button"
           onClick={() => setPostponed(true)}
-          className="inline-flex min-h-11 items-center justify-center rounded-sm border border-cream/30 px-3 py-2 text-[11px] font-medium tracking-[0.14em] text-cream uppercase"
+          className="inline-flex min-h-11 items-center justify-center rounded-sm border border-ink/40 px-3 py-2 text-[11px] font-medium tracking-[0.14em] text-ink uppercase"
         >
           Later
         </button>

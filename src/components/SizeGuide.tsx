@@ -2,6 +2,21 @@ import { useEffect, useState } from 'react'
 import { useContent } from '../context/ContentContext'
 import { SectionHeading } from './SectionHeading'
 
+function ColumnLabel({ label }: { label: string }) {
+  const match = /^(.*?)(\s*\([^)]+\))\s*$/.exec(label)
+  if (!match) return label
+
+  return (
+    <>
+      <span className="md:hidden">
+        <span className="block whitespace-nowrap">{match[1]}</span>
+        <span className="mt-0.5 block tracking-normal">{match[2].trim()}</span>
+      </span>
+      <span className="hidden md:inline">{label}</span>
+    </>
+  )
+}
+
 export function SizeGuide() {
   const { sizeGuides } = useContent()
   const [activeId, setActiveId] = useState(sizeGuides[0]?.id ?? '')
@@ -60,48 +75,45 @@ export function SizeGuide() {
         ) : null}
 
         {activeChart ? (
-          <>
-            <div className="overflow-x-auto border border-line bg-cream">
-              <table className="min-w-[640px] w-full text-left">
-                <thead>
-                  <tr className="border-b border-line bg-cream-dark/60 text-xs tracking-[0.14em] text-stone uppercase">
-                    <th className="px-4 py-4 font-medium md:px-6">Size</th>
+          <div className="border border-line bg-cream">
+            <table className="w-full table-fixed text-left md:table-auto">
+              <thead>
+                <tr className="border-b border-line bg-cream-dark/60 text-[10px] leading-tight tracking-normal text-stone uppercase sm:text-xs sm:tracking-[0.1em] md:tracking-[0.14em]">
+                  <th className="w-9 px-1 py-2.5 align-bottom font-medium sm:w-16 sm:px-4 sm:py-3 md:px-6 md:py-4">
+                    Size
+                  </th>
+                  {activeChart.columns.map((column) => (
+                    <th
+                      key={column.id}
+                      className="px-0.5 py-2.5 align-bottom font-medium sm:px-4 sm:py-3 md:px-6 md:py-4"
+                    >
+                      <ColumnLabel label={column.label} />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {activeChart.rows.map((row) => (
+                  <tr
+                    key={row.size}
+                    className="border-b border-line last:border-b-0"
+                  >
+                    <td className="px-1 py-2.5 text-xs font-medium whitespace-nowrap text-ink sm:px-4 sm:py-3 sm:text-base md:px-6 md:py-4">
+                      {row.size}
+                    </td>
                     {activeChart.columns.map((column) => (
-                      <th
+                      <td
                         key={column.id}
-                        className="px-4 py-4 font-medium md:px-6"
+                        className="px-0.5 py-2.5 text-[11px] whitespace-nowrap text-ink-soft tabular-nums sm:px-4 sm:py-3 sm:text-sm sm:whitespace-normal md:px-6 md:py-4 md:text-base"
                       >
-                        {column.label}
-                      </th>
+                        {row.values[column.id] || '—'}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {activeChart.rows.map((row) => (
-                    <tr
-                      key={row.size}
-                      className="border-b border-line last:border-b-0"
-                    >
-                      <td className="px-4 py-4 font-medium text-ink md:px-6">
-                        {row.size}
-                      </td>
-                      {activeChart.columns.map((column) => (
-                        <td
-                          key={column.id}
-                          className="px-4 py-4 text-ink-soft md:px-6"
-                        >
-                          {row.values[column.id] || '—'}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-4 text-sm text-stone md:hidden">
-              Swipe horizontally to view all measurements.
-            </p>
-          </>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p className="text-sm text-ink-soft/80">
             Size charts will appear here once they are added in the admin

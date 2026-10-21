@@ -510,7 +510,7 @@ export function AdminImages() {
                       {index + 1}
                       {image.span !== 'normal' ? ` · ${image.span}` : ''}
                     </span>
-                    <span className="absolute right-1.5 bottom-1.5 text-cream/90 drop-shadow">
+                    <span className="absolute right-1.5 bottom-1.5 text-white/90 drop-shadow">
                       <GripVertical className="size-4" />
                     </span>
                   </div>

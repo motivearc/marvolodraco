@@ -163,7 +163,7 @@ function ImagePickerModal({
 
   return (
     <div
-      className="animate-fade-in fixed inset-0 z-[70] flex items-end justify-center bg-ink/55 p-0 sm:items-center sm:p-6"
+      className="animate-fade-in fixed inset-0 z-[70] flex items-end justify-center bg-black/55 p-0 sm:items-center sm:p-6"
       onClick={onClose}
       role="presentation"
     >

@@ -54,7 +54,7 @@ export function StorefrontPage() {
   if (configured && loading) {
     return (
       <div
-        className="flex min-h-dynamic items-center justify-center bg-ink"
+        className="flex min-h-dynamic items-center justify-center bg-black"
         aria-busy="true"
         aria-label="Loading"
       >

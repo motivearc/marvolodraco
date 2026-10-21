@@ -56,7 +56,7 @@ export function PWAInstallInstructions() {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center bg-ink/55 p-0 sm:items-center sm:p-6"
+      className="fixed inset-0 z-[80] flex items-end justify-center bg-black/55 p-0 sm:items-center sm:p-6"
       onClick={closeInstructions}
       role="presentation"
     >
